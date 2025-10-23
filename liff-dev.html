@@ -1,230 +1,307 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แดชบอร์ดสุขภาพ LIFF</title>
+    <title>Health Dashboard</title>
+    <!-- 1. โหลด Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 2. โหลด LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans Thai', 'Inter', sans-serif; }
+        /* ตั้งค่าธีมสีเข้มเป็นค่าเริ่มต้น */
+        :root { color-scheme: dark; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #121212;
+            color: #E0E0E0;
+        }
+        /* สีการ์ดในธีมมืด */
+        .card {
+            background-color: #1E1E1E;
+            border: 1px solid #333;
+        }
+        /* สีปุ่มหลัก */
+        .btn-primary {
+            background-color: #00B900; /* สีเขียว LINE */
+            color: #FFFFFF;
+        }
+        .btn-primary:hover {
+            background-color: #00A300;
+        }
+        /* สีปุ่มรอง (เชื่อมต่อ) */
+        .btn-secondary {
+            background-color: #333;
+            border: 1px solid #555;
+            color: #F5F5F5;
+        }
+        .btn-secondary:hover {
+            background-color: #444;
+        }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen font-sans">
+<body class="p-4 max-w-lg mx-auto">
 
-    <div class="container mx-auto p-4 max-w-md">
-        <div id="loadingState" class="text-center p-10">
-            <p class="text-lg text-gray-400">กำลังโหลดข้อมูล...</p>
+    <!-- ส่วนหัวและข้อมูลผู้ใช้ -->
+    <header class="flex items-center space-x-3 mb-6">
+        <img id="userPicture" class="w-16 h-16 rounded-full border-2 border-gray-700" src="https://placehold.co/100x100/333/808080?text=USER" alt="User Picture">
+        <div>
+            <p class="text-sm text-gray-400">สวัสดีตอนเช้า,</p>
+            <h1 id="displayName" class="text-2xl font-bold text-white">กำลังโหลด...</h1>
         </div>
+    </header>
 
-        <!-- สถานะ: ยังไม่ล็อกอิน -->
-        <div id="loginState" class="hidden text-center p-10 bg-gray-800 rounded-lg shadow-lg">
-            <h1 class="text-2xl font-bold mb-4">แดชบอร์ดสุขภาพ</h1>
-            <p class="text-gray-300 mb-6">กรุณาล็อกอินด้วยบัญชี LINE ของคุณเพื่อเริ่มต้นใช้งาน</p>
-            <button id="btnLogin" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200">
-                เข้าสู่ระบบด้วย LINE
-            </button>
-        </div>
-
-        <!-- สถานะ: ล็อกอินแล้ว (หน้าแอปหลัก) -->
-        <div id="appState" class="hidden space-y-6">
-            
-            <!-- ส่วนโปรไฟล์ผู้ใช้ -->
-            <div id="profileSection" class="bg-gray-800 rounded-lg p-5 flex items-center space-x-4 shadow-lg">
-                <img id="userPicture" class="w-16 h-16 rounded-full border-2 border-green-400" src="https://placehold.co/100x100/333/FFF?text=?" alt="User Picture">
-                <div>
-                    <h1 id="displayName" class="text-xl font-bold text-white">...</h1>
-                    <p class="text-xs text-gray-400 break-all">
-                        <span class="font-medium">User ID:</span> <span id="userId">...</span>
-                    </p>
-                </div>
-            </div>
-
-            <!-- ส่วนแดชบอร์ด (ข้อมูลจำลอง) -->
-            <div id="dashboardSection">
-                <h2 class="text-2xl font-bold text-green-400 mb-4">แดชบอร์ดวันนี้</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- การ์ดจำนวนก้าว -->
-                    <div class="bg-gray-800 p-4 rounded-lg text-center shadow">
-                        <svg class="w-8 h-8 text-green-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <p class="text-sm text-gray-300">จำนวนก้าว</p>
-                        <p class="text-3xl font-bold">8,210</p>
-                    </div>
-                    
-                    <!-- การ์ดอัตราการเต้นหัวใจ -->
-                    <div class="bg-gray-800 p-4 rounded-lg text-center shadow">
-                        <svg class="w-8 h-8 text-red-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                        <p class="text-sm text-gray-300">ชีพจร (BPM)</p>
-                        <p class="text-3xl font-bold">72</p>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ส่วนเชื่อมต่อ API (อัปเดตแล้ว!) -->
-            <div class="bg-gray-800 p-5 rounded-lg shadow-lg">
-                <h3 class="font-bold text-lg mb-2">เชื่อมต่อข้อมูลสุขภาพ</h3>
-                <p id="connectSubtext" class="text-sm text-gray-300 mb-4">เชื่อมต่อกับ Google Fit เพื่อซิงค์ข้อมูลของคุณโดยอัตโนมัติ</p>
-                <button id="btnConnectHealth" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                    เชื่อมต่อ Google Fit
-                </button>
-            </div>
-
-            <!-- ส่วนปุ่มคำสั่ง LIFF -->
-            <div id="liffButtonsSection" class="space-y-3 pt-4 border-t border-gray-700">
-                <button id="btnSend" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
-                    แชร์ผลลัพธ์ให้เพื่อน
-                </button>
-                <button id="btnLogout" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
-                    ออกจากระบบ
-                </button>
-            </div>
-        </div>
+    <!-- ส่วนเชื่อมต่อ Google Fit -->
+    <div id="connect-section" class="card p-4 rounded-lg text-center" style="display: none;">
+        <h2 class="font-bold mb-2">เชื่อมต่อข้อมูลสุขภาพ</h2>
+        <p class="text-sm text-gray-400 mb-4">เชื่อมต่อ Google Fit เพื่อดูข้อมูลสุขภาพของคุณที่นี่</p>
+        <button id="btnConnectGoogle" class="btn-secondary font-bold py-2 px-6 rounded-lg w-full">
+            เชื่อมต่อ Google Fit
+        </button>
     </div>
 
+    <!-- ส่วนแสดงข้อความสถานะ (เช่น กำลังโหลด, สำเร็จ) -->
+    <div id="status-message" class="card p-4 rounded-lg text-center" style="display: none;">
+        <p id="status-text" class="font-bold"></p>
+    </div>
+
+    <!-- ส่วนแดชบอร์ดข้อมูลสุขภาพ (ซ่อนไว้ก่อน) -->
+    <main id="dashboard-content" style="display: none;">
+        <!-- สรุปข้อมูลโปรไฟล์ -->
+        <section class="grid grid-cols-3 gap-3 mb-4 text-center">
+            <div class="card p-3 rounded-lg">
+                <p class="text-xs text-gray-400">น้ำหนัก</p>
+                <p class="text-xl font-bold"><span id="weight-data">--</span> <span class="text-sm font-normal">kg</span></p>
+            </div>
+            <div class="card p-3 rounded-lg">
+                <p class="text-xs text-gray-400">ส่วนสูง</p>
+                <p class="text-xl font-bold"><span id="height-data">--</span> <span class="text-sm font-normal">cm</span></p>
+            </div>
+            <div class="card p-3 rounded-lg">
+                <p class="text-xs text-gray-400">อายุ</p>
+                <p class="text-xl font-bold"><span id="age-data">--</span> <span class="text-sm font-normal">ปี</span></p>
+            </div>
+        </section>
+
+        <!-- สรุปข้อมูลกิจกรรม (ก้าว, หัวใจ) -->
+        <section class="space-y-4">
+            <div class="card p-4 rounded-lg flex items-center space-x-4">
+                <span class="text-3xl">👟</span>
+                <div>
+                    <p class="text-sm text-gray-400">ก้าวเดิน (วันนี้)</p>
+                    <p class="text-2xl font-bold"><span id="steps-data">--</span> <span class="text-base font-normal">ก้าว</span></p>
+                </div>
+            </div>
+            <div class="card p-4 rounded-lg flex items-center space-x-4">
+                <span class="text-3xl">❤️</span>
+                <div>
+                    <p class="text-sm text-gray-400">อัตราการเต้นหัวใจ (เฉลี่ย)</p>
+                    <p class="text-2xl font-bold"><span id="heart-data">--</span> <span class="text-base font-normal">BPM</span></p>
+                </div>
+            </div>
+            <div class="card p-4 rounded-lg flex items-center space-x-4">
+                <span class="text-3xl">👤</span>
+                <div>
+                    <p class="text-sm text-gray-400">เพศ</p>
+                    <p class="text-2xl font-bold"><span id="gender-data">--</span></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ปุ่ม Logout (แสดงเมื่อล็อกอินแล้ว) -->
+    <footer class="mt-8 text-center" id="logout-footer" style="display: none;">
+        <button id="btnLogout" class="text-gray-500 text-sm hover:text-red-400">ออกจากระบบ</button>
+    </footer>
+
     <script>
-        // DOM Elements
-        const loadingState = document.getElementById("loadingState");
-        const loginState = document.getElementById("loginState");
-        const appState = document.getElementById("appState");
+        // =============================================================
+        // == ★★★ ตั้งค่าตัวแปรสำคัญ ★★★ (กรอก 2 ช่องนี้) ==
+        // =============================================================
+        const LIFF_ID = "2008337931-z1xeJb7D"; // 👈 1. กรอก LIFF ID ของคุณ
+        const SERVER_URL = "https://sequential-seborrheal-clelia.ngrok-free.dev"; // 👈 2. กรอก URL ของ Server (ngrok)
+        // =============================================================
+
+        // --- ตัวแปรสำหรับ DOM Elements ---
+        const btnConnectGoogle = document.getElementById('btnConnectGoogle');
+        const btnLogout = document.getElementById('btnLogout');
         
-        const btnLogin = document.getElementById("btnLogin");
-        const btnLogout = document.getElementById("btnLogout");
-        const btnSend = document.getElementById("btnSend");
-        const btnConnectHealth = document.getElementById("btnConnectHealth");
+        const loadingIndicator = document.getElementById('status-message');
+        const statusText = document.getElementById('status-text');
         
-        const userPicture = document.getElementById("userPicture");
-        const displayName = document.getElementById("displayName");
-        const userId = document.getElementById("userId");
-        const connectSubtext = document.getElementById("connectSubtext");
+        const connectSection = document.getElementById('connect-section');
+        const dashboardContent = document.getElementById('dashboard-content');
+        const logoutFooter = document.getElementById('logout-footer');
+        
+        // Data Elements
+        const stepsEl = document.getElementById('steps-data');
+        const heartEl = document.getElementById('heart-data');
+        const weightEl = document.getElementById('weight-data');
+        const heightEl = document.getElementById('height-data');
+        const ageEl = document.getElementById('age-data');
+        const genderEl = document.getElementById('gender-data');
 
-        // ★★★★★ ตั้งค่า URL ของ SERVER ★★★★★
-        const SERVER_URL = "https://sequential-seborrheal-clelia.ngrok-free.dev"; 
-        // ★★★★★★★★★★★★★★★★★★★★★★★★★
-
-        function showLoading() {
-            loadingState.style.display = "block";
-            loginState.style.display = "none";
-            appState.style.display = "none";
-        }
-        function showLogin() {
-            loadingState.style.display = "none";
-            loginState.style.display = "block";
-            appState.style.display = "none";
-        }
-        function showApp() {
-            loadingState.style.display = "none";
-            loginState.style.display = "none";
-            appState.style.display = "block";
-        }
-
-        // Main LIFF Initialization
+        /**
+         * ฟังก์ชันหลัก: เริ่มต้นการทำงานของ LIFF
+         */
         async function initializeLiff() {
-            showLoading();
             try {
-                
-                await liff.init({ liffId: "2008337931-z1xeJb7D" }); // ★★★ ใส่ LIFF ID
+                await liff.init({ liffId: LIFF_ID });
 
                 if (!liff.isLoggedIn()) {
-                    showLogin();
+                    // ถ้ายังไม่ล็อกอินใน LINE ให้ล็อกอินก่อน
+                    liff.login();
                 } else {
-                    showApp();
-                    const profile = await liff.getProfile();
-                    userPicture.src = profile.pictureUrl;
-                    displayName.innerText = profile.displayName;
-                    userId.innerText = profile.userId;
-                    
-                    checkUrlParams();
+                    // ถ้าล็อกอินใน LINE แล้ว
+                    await setupUserInfo(); // 1. แสดงข้อมูลผู้ใช้ LINE
+                    checkConnectionStatus(); // 2. ตรวจสอบสถานะการเชื่อมต่อ (จาก URL)
+                    await fetchHealthData(); // 3. ★★★ นี่คือส่วนที่เรียกข้อมูล ★★★
                 }
             } catch (e) {
                 console.error("LIFF Init Error:", e);
-                showLogin();
+                showStatusMessage(`เกิดข้อผิดพลาดในการโหลด: ${e.message}`, true);
             }
+        }
+
+        /**
+         * 1. ดึงข้อมูลโปรไฟล์ LINE มาแสดง
+         */
+        async function setupUserInfo() {
+            const profile = await liff.getProfile();
+            document.getElementById('displayName').innerText = profile.displayName;
+            document.getElementById('userPicture').src = profile.pictureUrl;
+            logoutFooter.style.display = 'block';
         }
         
-        function checkUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.has('connect') && params.get('connect') === 'success') {
-                connectSubtext.innerText = "เชื่อมต่อ Google Fit สำเร็จแล้ว!";
-                connectSubtext.className = "text-sm text-green-400 mb-4";
-                btnConnectHealth.innerText = "เชื่อมต่อสำเร็จ";
-                btnConnectHealth.disabled = true;
-                btnConnectHealth.className = "w-full bg-gray-600 text-white font-bold py-2 px-4 rounded-lg cursor-not-allowed";
-            } else if (params.has('error')) {
-                connectSubtext.innerText = "เกิดข้อผิดพลาด: " + params.get('error');
-                connectSubtext.className = "text-sm text-red-400 mb-4";
+        /**
+         * 2. ตรวจสอบสถานะการเชื่อมต่อ (หลังจาก Redirect กลับมาจาก Google)
+         */
+        function checkConnectionStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('connect') === 'success') {
+                showStatusMessage("เชื่อมต่อ Google Fit สำเร็จ!", false);
+            } else if (urlParams.get('connect') === 'error') {
+                showStatusMessage(`เกิดข้อผิดพลาด: ${urlParams.get('message')}`, true);
             }
         }
 
+        /**
+         * 3. ★★★ (นี่คือส่วนที่คุณถาม) ★★★
+         * ฟังก์ชันสำหรับ "ดึงข้อมูล" จาก Backend Server ของเรา
+         */
+        async function fetchHealthData() {
+            showStatusMessage("กำลังโหลดข้อมูลสุขภาพ...", false);
+            dashboardContent.style.display = 'none';
+            connectSection.style.display = 'none';
 
+            let lineUserId;
+            try {
+                // 3.1 ดึงโปรไฟล์ LINE เพื่อเอา lineUserId
+                const profile = await liff.getProfile();
+                lineUserId = profile.userId;
 
-        btnLogin.addEventListener("click", () => {
-            liff.login({ redirectUri: window.location.href });
-        });
+                // 3.2 สร้าง URL สำหรับยิง API (ส่ง line_user_id ไปให้ Server)
+                const url = new URL(`${SERVER_URL}/api/get-health-data`);
+                url.searchParams.append('line_user_id', lineUserId);
+                
+                // 3.3 ยิง API (Fetch) ไปยัง Server
+                const response = await fetch(url);
 
-        btnLogout.addEventListener("click", () => {});
-        btnLogout.addEventListener("click", () => {
-            if (liff.isLoggedIn()) {
-                if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) {
-                    liff.logout();
-                    window.location.reload();
+                // 3.4 ตรวจสอบ Response จาก Server
+                if (response.status === 404) {
+                    // (Error 404) ไม่พบข้อมูล = ผู้ใช้ยังไม่ได้เชื่อมต่อ Google Fit
+                    showStatusMessage("โปรดเชื่อมต่อ Google Fit ก่อน", true);
+                    connectSection.style.display = 'block'; // แสดงปุ่มเชื่อมต่อ
+                    return;
                 }
+                
+                if (response.status === 401) {
+                    // (Error 401) Token หมดอายุ (อาจถูกถอนสิทธิ์)
+                    showStatusMessage("สิทธิ์หมดอายุ, โปรดเชื่อมต่อใหม", true);
+                    connectSection.style.display = 'block'; // แสดงปุ่มเชื่อมต่อใหม่
+                    return;
+                }
+
+                if (!response.ok) {
+                    // Error อื่นๆ จาก Server
+                    throw new Error(`Server error: ${response.statusText}`);
+                }
+
+                // 3.5 (สำเร็จ!) แปลงข้อมูลเป็น JSON
+                const data = await response.json();
+                
+                // 3.6 เรียกฟังก์ชันเพื่ออัปเดตหน้าเว็บ
+                updateUIWithData(data);
+                
+                loadingIndicator.style.display = 'none'; // ซ่อนข้อความ "กำลังโหลด"
+                dashboardContent.style.display = 'grid'; // แสดงแดชบอร์ด
+
+            } catch (err) {
+                console.error("Fetch Health Data Error:", err);
+                showStatusMessage(`เกิดข้อผิดพลาด: ${err.message}`, true);
+                connectSection.style.display = 'block';
             }
-        });
+        }
+
+        /**
+         * 4. ★★★ (นี่คือส่วนที่ "ใช้งาน" ข้อมูล) ★★★
+         * อัปเดตตัวเลขใน HTML ด้วยข้อมูลที่ได้จาก JSON
+         */
+        function updateUIWithData(data) {
+            // ใช้ data.steps (จาก JSON) ไปใส่ใน Element ที่มี id="steps-data"
+            // (?? '--' หมายถึง: ถ้าข้อมูลเป็น null หรือ undefined ให้แสดง '--' แทน)
+            stepsEl.innerText = data.steps ?? '--';
+            heartEl.innerText = data.heartRate ?? '--';
+            weightEl.innerText = data.weight ?? '--';
+            heightEl.innerText = data.height ?? '--';
+            ageEl.innerText = data.age ?? '--';
+            genderEl.innerText = data.gender ?? '--';
+        }
+
+        /**
+         * ฟังก์ชันตัวช่วย: แสดงข้อความสถานะ
+         */
+        function showStatusMessage(message, isError = false) {
+            statusText.innerText = message;
+            statusText.className = isError ? 'font-bold text-red-400' : 'font-bold text-green-400';
+            loadingIndicator.style.display = 'block';
+        }
+
+        // --- Event Listeners ---
         
-        btnSend.addEventListener("click", async () => {});
-        btnSend.addEventListener("click", async () => {
-            if (!liff.isInClient()) {
-                alert("ฟีเจอร์นี้ใช้ได้เฉพาะเมื่อเปิดในแอป LINE เท่านั้น");
-                return;
-            }
+        // (ปุ่มเชื่อมต่อ Google)
+        btnConnectGoogle.addEventListener('click', async () => {
             try {
-                await liff.sendMessages([{ type: "text", text: "นี่คือข้อมูลสุขภาพของฉันวันนี้: ก้าวเดิน 8,210 ก้าว!" }]);
-                alert("ส่งข้อความสำเร็จ!");
-                liff.closeWindow();
-            } catch (e) {
-                console.error("Send Message Error:", e);
-                alert("ไม่สามารถส่งข้อความได้: " + e.message);
-            }
-        });
-
-
- 
-        btnConnectHealth.addEventListener("click", async () => {
-            try {
-                // 1. ดึงโปรไฟล์ LINE เพื่อเอา User ID
+                // 1. เอา lineUserId
                 const profile = await liff.getProfile();
                 const lineUserId = profile.userId;
                 
-                // 2. สร้าง URL ที่จะใช้เริ่มกระบวนการ OAuth
+                // 2. สร้าง URL สำหรับเริ่ม Auth (ที่ Server ของเรา)
                 const authUrl = `${SERVER_URL}/auth/google/start?line_user_id=${lineUserId}`;
-
-                if (liff.isInClient()) {
-                    
-                    // ถ้าเปิดในแอป LINE ให้ใช้ liff.openWindow
-                    // เพื่อเปิดในเบราว์เซอร์ภายนอก (Chrome/Safari)
-                    alert("ระบบจะเปิดเบราว์เซอร์ภายนอก (เช่น Chrome) เพื่อให้คุณล็อกอิน Google...");
-                    liff.openWindow({
-                        url: authUrl,
-                        external: true // สั่งให้เปิดในเบราว์เซอร์นอกแอป
-                    });
-                } else {
-                    // 4. (ทางเลือก) ถ้าเปิดในเบราว์เซอร์คอมพิวเตอร์
-                    // ให้ใช้วิธีเดิม (window.location.href)
-                    window.location.href = authUrl;
-                }
+                
+                // 3. (สำคัญ!) เปิดด้วย liff.openWindow เพื่อแก้ 403:disallowed_useragent
+                alert('ระบบจะเปิดเบราว์เซอร์ภายนอกเพื่อเชื่อมต่อ Google Fit');
+                liff.openWindow({
+                    url: authUrl,
+                    external: true // เปิดในเบราว์เซอร์ภายนอก (Chrome/Safari)
+                });
 
             } catch (err) {
-                console.error("Error starting auth flow:", err);
-                alert("เกิดข้อผิดพลาดในการเชื่อมต่อ: " + err.message);
+                console.error("Connect Error:", err);
+                showStatusMessage(`เกิดข้อผิดพลาด: ${err.message}`, true);
             }
         });
 
-        // Run the app
-        document.addEventListener("DOMContentLoaded", initializeLiff);
+        // (ปุ่ม Logout)
+        btnLogout.addEventListener('click', () => {
+            if (liff.isLoggedIn()) {
+                liff.logout();
+                window.location.reload();
+            }
+        });
+
+        // --- เริ่มการทำงาน ---
+        document.addEventListener('DOMContentLoaded', initializeLiff);
 
     </script>
 </body>
