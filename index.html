@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My First LIFF App</title>
+</head>
+
+<body>
+    <h1>สวัสดี LIFF App!</h1>
+
+    <div id="userInfo" style="display: none;">
+        <p>คุณล็อกอินแล้ว:</p>
+        <img id="userPicture" width="100" />
+        <p><strong>User ID:</strong> <span id="userId"></span></p>
+        <p><strong>ชื่อ:</strong> <span id="displayName"></span></p>
+    </div>
+
+    <button id="btnLogin" style="display: none;">Login</button>
+    <button id="btnLogout" style="display: none;">Logout</button>
+    <button id="btnSend" style="display: none;">Send Message</button>
+
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+    <script>
+        async function initializeLiff() {
+            try {
+                // 2. สั่ง Initialize LIFF (ใส่ LIFF ID ของคุณ)
+                await liff.init({ liffId: "YOUR_LIFF_ID_HERE" }); // <-- ★★★ ใส่ LIFF ID ของคุณตรงนี้
+
+                // 3. ตรวจสอบสถานะการล็อกอิน
+                if (!liff.isLoggedIn()) {
+                    // ถ้ายังไม่ล็อกอิน (เช่น เปิดใน Browser นอก)
+                    document.getElementById("btnLogin").style.display = "block";
+                } else {
+                    // ถ้าล็อกอินแล้ว (เปิดใน LINE)
+                    document.getElementById("btnLogout").style.display = "block";
+                    document.getElementById("btnSend").style.display = "block";
+                    document.getElementById("userInfo").style.display = "block";
+
+                    // 4. ดึงข้อมูลโปรไฟล์ผู้ใช้
+                    const profile = await liff.getProfile();
+                    document.getElementById("userId").innerText = profile.userId;
+                    document.getElementById("displayName").innerText = profile.displayName;
+                    document.getElementById("userPicture").src = profile.pictureUrl;
+                }
+            } catch (e) {
+                console.error("LIFF Init Error:", e);
+            }
+        }
+
+        // --- Event Listeners สำหรับปุ่ม ---
+
+        // ปุ่ม Login
+        document.getElementById("btnLogin").addEventListener("click", () => {
+            liff.login(); // สั่งให้ LIFF เปิดหน้าล็อกอินของ LINE
+        });
+
+        // ปุ่ม Logout
+        document.getElementById("btnLogout").addEventListener("click", () => {
+            if (liff.isLoggedIn()) {
+                liff.logout();
+                window.location.reload(); // รีโหลดหน้า
+            }
+        });
+
+        // ปุ่ม Send Message (จะทำงานเมื่อเปิดในห้องแชทเท่านั้น)
+        document.getElementById("btnSend").addEventListener("click", async () => {
+            if (!liff.isInClient()) {
+                alert("ฟีเจอร์นี้ใช้ได้เฉพาะเมื่อเปิดในแอป LINE เท่านั้น");
+                return;
+            }
+
+            try {
+                // 5. สั่งส่งข้อความ
+                await liff.sendMessages([
+                    {
+                        type: "text",
+                        text: "สวัสดี! ฉันส่งข้อความนี้จาก LIFF App"
+                    }
+                ]);
+                liff.closeWindow(); // ส่งเสร็จแล้ว ปิดหน้าต่าง LIFF
+            } catch (e) {
+                console.error("Send Message Error:", e);
+            }
+        });
+
+        // ------------------------------
+        // เริ่มการทำงานของ LIFF
+        initializeLiff();
+    </script>
+</body>
+
+</html>
