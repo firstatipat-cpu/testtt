@@ -5,22 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แดชบอร์ดสุขภาพ LIFF</title>
     
-    <!-- 1. โหลด Tailwind CSS -->
+    <!-- โหลด Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 2. โหลด LIFF SDK -->
+    <!-- โหลด LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     
-    <!-- 3. (ตัวเลือก) โหลดฟอนต์สวยๆ -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ตั้งค่าฟอนต์หลัก */
-        body {
-            font-family: 'Noto Sans Thai', 'Inter', sans-serif;
-        }
+        body { font-family: 'Noto Sans Thai', 'Inter', sans-serif; }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen font-sans">
@@ -28,6 +24,8 @@
     <!-- Container หลัก -->
     <div class="container mx-auto p-4 max-w-md">
 
+        <!-- (... ส่วน Loading และ Login State เหมือนเดิม ...) -->
+        
         <!-- สถานะ: กำลังโหลด -->
         <div id="loadingState" class="text-center p-10">
             <p class="text-lg text-gray-400">กำลังโหลดข้อมูล...</p>
@@ -35,12 +33,14 @@
 
         <!-- สถานะ: ยังไม่ล็อกอิน -->
         <div id="loginState" class="hidden text-center p-10 bg-gray-800 rounded-lg shadow-lg">
+            <!-- ( ... โค้ดปุ่ม Login เหมือนเดิม ... ) -->
             <h1 class="text-2xl font-bold mb-4">แดชบอร์ดสุขภาพ</h1>
             <p class="text-gray-300 mb-6">กรุณาล็อกอินด้วยบัญชี LINE ของคุณเพื่อเริ่มต้นใช้งาน</p>
             <button id="btnLogin" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200">
                 เข้าสู่ระบบด้วย LINE
             </button>
         </div>
+
 
         <!-- สถานะ: ล็อกอินแล้ว (หน้าแอปหลัก) -->
         <div id="appState" class="hidden space-y-6">
@@ -56,7 +56,7 @@
                 </div>
             </div>
 
-            <!-- ส่วนแดชบอร์ด (ข้อมูลจำลอง) -->
+            <!-- ( ... ส่วน แดชบอร์ดข้อมูลจำลอง เหมือนเดิม ... ) -->
             <div>
                 <h2 class="text-2xl font-bold text-green-400 mb-4">แดชบอร์ดวันนี้</h2>
                 <div class="grid grid-cols-2 gap-4">
@@ -76,16 +76,17 @@
                 </div>
             </div>
 
-            <!-- ส่วนเชื่อมต่อ API (จำลอง) -->
+
+            <!-- ส่วนเชื่อมต่อ API (อัปเดตแล้ว!) -->
             <div class="bg-gray-800 p-5 rounded-lg shadow-lg">
                 <h3 class="font-bold text-lg mb-2">เชื่อมต่อข้อมูลสุขภาพ</h3>
-                <p class="text-sm text-gray-300 mb-4">เชื่อมต่อกับ Google Fit หรือ Apple Health เพื่อซิงค์ข้อมูลของคุณโดยอัตโนมัติ</p>
+                <p id="connectSubtext" class="text-sm text-gray-300 mb-4">เชื่อมต่อกับ Google Fit เพื่อซิงค์ข้อมูลของคุณโดยอัตโนมัติ</p>
                 <button id="btnConnectHealth" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
                     เชื่อมต่อ Google Fit
                 </button>
             </div>
 
-            <!-- ส่วนปุ่มคำสั่ง LIFF -->
+            <!-- ( ... ส่วนปุ่มคำสั่ง LIFF อื่นๆ เหมือนเดิม ... ) -->
             <div class="space-y-3 pt-4 border-t border-gray-700">
                 <button id="btnSend" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
                     แชร์ผลลัพธ์ให้เพื่อน
@@ -99,7 +100,7 @@
 
     </div>
 
-    <!-- 4. โค้ด JavaScript สำหรับ LIFF -->
+    <!-- โค้ด JavaScript สำหรับ LIFF (อัปเดตแล้ว!) -->
     <script>
         // DOM Elements
         const loadingState = document.getElementById("loadingState");
@@ -114,8 +115,19 @@
         const userPicture = document.getElementById("userPicture");
         const displayName = document.getElementById("displayName");
         const userId = document.getElementById("userId");
+        const connectSubtext = document.getElementById("connectSubtext");
 
-        // UI Control Functions
+        // ★★★★★ ตั้งค่า URL ของ SERVER ★★★★★
+        // ใส่ URL ของ Backend Server (server.js) ของคุณ
+        // ถ้าใช้ ngrok ก็ใส่ URL ของ ngrok ที่นี่
+        const SERVER_URL = "http://localhost:3000"; 
+        // ★★★★★★★★★★★★★★★★★★★★★★★★★
+
+        // UI Control Functions (เหมือนเดิม)
+        function showLoading() { /* ... */ }
+        function showLogin() { /* ... */ }
+        function showApp() { /* ... */ }
+        // (ย่อโค้ดส่วน UI ที่เหมือนเดิมไว้)
         function showLoading() {
             loadingState.style.display = "block";
             loginState.style.display = "none";
@@ -136,41 +148,48 @@
         async function initializeLiff() {
             showLoading();
             try {
-                // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-                // ★                                              ★
-                // ★  สำคัญมาก: ใส่ LIFF ID ของคุณตรงนี้!       ★
-                // ★                                              ★
-                // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-                await liff.init({ liffId: "2008337931-z1xeJb7D" }); 
+                await liff.init({ liffId: "2008337931-z1xeJb7D" }); // ★★★ ใส่ LIFF ID
 
                 if (!liff.isLoggedIn()) {
-                    // User is not logged in
                     showLogin();
                 } else {
-                    // User is logged in
                     showApp();
-                    
-                    // Get user profile
                     const profile = await liff.getProfile();
                     userPicture.src = profile.pictureUrl;
                     displayName.innerText = profile.displayName;
                     userId.innerText = profile.userId;
+
+                    // (อัปเดต!) ตรวจสอบ Query Params ตอนโหลดหน้า
+                    checkUrlParams();
                 }
             } catch (e) {
                 console.error("LIFF Init Error:", e);
-                alert("LIFF Initialization Failed. Error: " + e.message);
-                showLogin(); // Show login on error
+                showLogin();
             }
         }
         
-        // --- Event Listeners ---
+        // (ใหม่!) ฟังก์ชันตรวจสอบ URL Params หลังจาก Redirect กลับมาจาก Server
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('connect') && params.get('connect') === 'success') {
+                connectSubtext.innerText = "เชื่อมต่อ Google Fit สำเร็จแล้ว!";
+                connectSubtext.className = "text-sm text-green-400 mb-4";
+                btnConnectHealth.innerText = "เชื่อมต่อสำเร็จ";
+                btnConnectHealth.disabled = true;
+                btnConnectHealth.className = "w-full bg-gray-600 text-white font-bold py-2 px-4 rounded-lg cursor-not-allowed";
+            } else if (params.has('error')) {
+                connectSubtext.innerText = "เกิดข้อผิดพลาด: " + params.get('error');
+                connectSubtext.className = "text-sm text-red-400 mb-4";
+            }
+        }
 
-        // Login Button
+
+        // --- Event Listeners (อัปเดต!) ---
+
         btnLogin.addEventListener("click", () => {
             liff.login({ redirectUri: window.location.href });
         });
 
-        // Logout Button
         btnLogout.addEventListener("click", () => {
             if (liff.isLoggedIn()) {
                 if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) {
@@ -179,40 +198,43 @@
                 }
             }
         });
-
-        // Send Message Button
+        
+        btnSend.addEventListener("click", async () => { /* ... (เหมือนเดิม) ... */ });
         btnSend.addEventListener("click", async () => {
             if (!liff.isInClient()) {
                 alert("ฟีเจอร์นี้ใช้ได้เฉพาะเมื่อเปิดในแอป LINE เท่านั้น");
                 return;
             }
-            
             try {
-                // Send a message
-                await liff.sendMessages([
-                    {
-                        type: "text",
-                        text: "นี่คือข้อมูลสุขภาพของฉันวันนี้: ก้าวเดิน 8,210 ก้าว!"
-                    }
-                ]);
+                await liff.sendMessages([{ type: "text", text: "นี่คือข้อมูลสุขภาพของฉันวันนี้: ก้าวเดิน 8,210 ก้าว!" }]);
                 alert("ส่งข้อความสำเร็จ!");
-                liff.closeWindow(); // Close LIFF window after sending
+                liff.closeWindow();
             } catch (e) {
                 console.error("Send Message Error:", e);
                 alert("ไม่สามารถส่งข้อความได้: " + e.message);
             }
         });
 
-        // (Placeholder) Connect Health Button
-        btnConnectHealth.addEventListener("click", () => {
-            // This is where you would start your backend authentication flow
-            // (Like the Phase 4 we discussed earlier)
-            alert("กำลังเชื่อมต่อ...\nนี่คือจุดที่คุณจะเริ่มกระบวนการเชื่อมต่อ Backend (Phase 4) เพื่อขอสิทธิ์ Google Fit ครับ");
-            
-            // Example of how you *might* start the flow:
-            // const profile = await liff.getProfile();
-            // const lineUserId = profile.userId;
-            // window.location.href = `https://your-server.com/auth/google/start?line_user_id=${lineUserId}`;
+
+        // (สำคัญ! อัปเดตปุ่มนี้)
+        btnConnectHealth.addEventListener("click", async () => {
+            try {
+                // 1. ดึงโปรไฟล์ LINE เพื่อเอา User ID
+                const profile = await liff.getProfile();
+                const lineUserId = profile.userId;
+
+                // 2. ส่งผู้ใช้ไปที่ Backend Server (Route 1)
+                //    เพื่อให้ Server เริ่มกระบวนการ OAuth กับ Google
+                console.log(`Starting Auth Flow for ${lineUserId}`);
+                alert("กำลังพาคุณไปที่หน้ายืนยันสิทธิ์ของ Google...");
+                
+                // (สำคัญ!) เปลี่ยนเส้นทางผู้ใช้ไปยัง Backend ของคุณ
+                window.location.href = `${SERVER_URL}/auth/google/start?line_user_id=${lineUserId}`;
+
+            } catch (err) {
+                console.error("Error starting auth flow:", err);
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อ: " + err.message);
+            }
         });
 
         // Run the app
@@ -221,4 +243,3 @@
     </script>
 </body>
 </html>
-
