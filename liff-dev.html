@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <!-- (ส่วน Head เหมือนเดิม) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แดชบอร์ดสุขภาพ LIFF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans Thai', 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen font-sans">
+
+    <div class="container mx-auto p-4 max-w-md">
+        <!-- (ส่วน Loading และ Login เหมือนเดิม) -->
+        <div id="loadingState" class="text-center p-10">
+            <p class="text-lg text-gray-400">กำลังโหลดข้อมูล...</p>
+        </div>
+        <div id="loginState" class="hidden text-center p-10 bg-gray-800 rounded-lg shadow-lg">
+            <h1 class="text-2xl font-bold mb-4">แดชบอร์ดสุขภาพ</h1>
+            <p class="text-gray-300 mb-6">กรุณาล็อกอินด้วยบัญชี LINE ของคุณเพื่อเริ่มต้นใช้งาน</p>
+            <button id="btnLogin" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200">
+                เข้าสู่ระบบด้วย LINE
+            </button>
+        </div>
+
+        <!-- สถานะ: ล็อกอินแล้ว (หน้าแอปหลัก) -->
+        <div id="appState" class="hidden space-y-6">
+            
+            <!-- (ส่วนโปรไฟล์เหมือนเดิม) -->
+            <div id="profileSection" class="bg-gray-800 rounded-lg p-5 flex items-center space-x-4 shadow-lg">
+                <img id="userPicture" class="w-16 h-16 rounded-full border-2 border-green-400" src="https://placehold.co/100x100/333/FFF?text=?" alt="User Picture">
+                <div>
+                    <h1 id="displayName" class="text-xl font-bold text-white">...</h1>
+                    <p class="text-xs text-gray-400 break-all">
+                        <span class="font-medium">User ID:</span> <span id="userId">...</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- (ใหม่!) ส่วนแดชบอร์ด (จะดึงข้อมูลจริง) -->
+            <div id="dashboardSection">
+                <h2 class="text-2xl font-bold text-green-400 mb-4">แดชบอร์ด 7 วันล่าสุด</h2>
+                <div class="grid grid-cols-1 gap-4"> <!-- (เปลี่ยนเป็น 1 คอลัมน์) -->
+                    <!-- การ์ดจำนวนก้าว (จะแสดงข้อมูลจริง) -->
+                    <div class="bg-gray-800 p-4 rounded-lg text-center shadow">
+                        <svg class="w-8 h-8 text-green-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-sm text-gray-300">รวมจำนวนก้าว (7 วัน)</p>
+                        <!-- (ใหม่!) ID สำหรับแสดงผล -->
+                        <p id="stepsData" class="text-3xl font-bold">...</p> 
+                    </div>
+                </div>
+            </div>
+
+            <!-- (ส่วนเชื่อมต่อ API เหมือนเดิม) -->
+            <div class="bg-gray-800 p-5 rounded-lg shadow-lg">
+                <h3 class="font-bold text-lg mb-2">เชื่อมต่อข้อมูลสุขภาพ</h3>
+                <p id="connectSubtext" class="text-sm text-gray-300 mb-4">เชื่อมต่อกับ Google Fit เพื่อซิงค์ข้อมูลของคุณโดยอัตโนมัติ</p>
+                <button id="btnConnectHealth" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                    เชื่อมต่อ Google Fit
+                </button>
+            </div>
+            <!-- (ส่วนปุ่ม LIFF เหมือนเดิม) -->
+        </div>
+    </div>
+
+    <!-- โค้ด JavaScript สำหรับ LIFF (อัปเดต!) -->
+    <script>
+        // (DOM Elements อัปเดต)
+        const loadingState = document.getElementById("loadingState");
+        const loginState = document.getElementById("loginState");
+        const appState = document.getElementById("appState");
+        const btnLogin = document.getElementById("btnLogin");
+        const btnConnectHealth = document.getElementById("btnConnectHealth");
+        const userPicture = document.getElementById("userPicture");
+        const displayName = document.getElementById("displayName");
+        const userId = document.getElementById("userId");
+        const connectSubtext = document.getElementById("connectSubtext");
+        const stepsData = document.getElementById("stepsData"); // (ใหม่!)
+
+        // (SERVER_URL ต้องเป็น NGROK URL ของคุณ)
+        const SERVER_URL = "https://sequential-seborrheal-clelia.ngrok-free.dev"; 
+        
+        // (UI Functions เหมือนเดิม)
+        function showLoading() { /* ... */ }
+        function showLogin() { /* ... */ }
+        function showApp() { /* ... */ }
+        function showLoading() {
+            loadingState.style.display = "block";
+            loginState.style.display = "none";
+            appState.style.display = "none";
+        }
+        function showLogin() {
+            loadingState.style.display = "none";
+            loginState.style.display = "block";
+            appState.style.display = "none";
+        }
+        function showApp() {
+            loadingState.style.display = "none";
+            loginState.style.display = "none";
+            appState.style.display = "block";
+        }
+
+
+        // (ใหม่!) ฟังก์ชันสำหรับดึงข้อมูลสุขภาพ
+        async function fetchHealthData(lineUserId) {
+            stepsData.innerText = "กำลังโหลด...";
+            try {
+                // 1. เรียก API ที่เราสร้างขึ้นใน Phase 6
+                const response = await fetch(`${SERVER_URL}/api/get-steps?line_user_id=${lineUserId}`);
+                
+                // 2. ตรวจสอบว่าสำเร็จหรือไม่
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    // (นี่คือ Error ที่เคยเกิดขึ้น) ถ้า Token ไม่มี หรือหมดอายุ
+                    if (response.status === 401) { 
+                        stepsData.innerText = "-";
+                        connectSubtext.innerText = "โปรดเชื่อมต่อ Google Fit ก่อน";
+                        connectSubtext.className = "text-sm text-yellow-400 mb-4";
+                    } else {
+                        throw new Error(errorData.error || "Server error");
+                    }
+                    return; // หยุดการทำงาน
+                }
+
+                // 3. (นี่คือสิ่งที่เคยพัง!) แปลงเป็น JSON
+                const data = await response.json();
+
+                // 4. แสดงผลข้อมูลจริง
+                stepsData.innerText = data.totalStepsLast7Days.toLocaleString() || "0";
+
+            } catch (err) {
+                // (นี่คือจุดที่แสดง Error ในรูปของคุณ!)
+                console.error("Fetch Health Data Error:", err);
+                // (เปลี่ยน Error ให้อ่านง่ายขึ้น)
+                stepsData.innerText = "Error";
+                connectSubtext.innerText = "เกิดข้อผิดพลาด: " + err.message;
+                connectSubtext.className = "text-sm text-red-400 mb-4";
+            }
+        }
+
+        // Main LIFF Initialization (อัปเดต!)
+        async function initializeLiff() {
+            showLoading();
+            try {
+                await liff.init({ liffId: "2008337931-z1xeJb7D" }); // (ต้องเป็น LIFF ID ของคุณ)
+
+                if (!liff.isLoggedIn()) {
+                    showLogin();
+                } else {
+                    showApp();
+                    const profile = await liff.getProfile();
+                    userPicture.src = profile.pictureUrl;
+                    displayName.innerText = profile.displayName;
+                    userId.innerText = profile.userId;
+                    
+                    // 1. ตรวจสอบ URL params ก่อน
+                    const isConnected = checkUrlParams(); 
+                    
+                    // 2. (ใหม่!) ถ้าไม่ได้กำลัง Redirect กลับมา...
+                    if (!isConnected) {
+                        // ...ก็ให้เริ่มดึงข้อมูลสุขภาพเลย
+                        await fetchHealthData(profile.userId);
+                    }
+                }
+            } catch (e) {
+                console.error("LIFF Init Error:", e);
+                showLogin();
+            }
+        }
+        
+        // (อัปเดต!) ฟังก์ชันนี้จะ return true ถ้าเพิ่งเชื่อมต่อเสร็จ
+        function checkUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.has('connect') && params.get('connect') === 'success') {
+                connectSubtext.innerText = "เชื่อมต่อ Google Fit สำเร็จแล้ว! กำลังดึงข้อมูล...";
+                connectSubtext.className = "text-sm text-green-400 mb-4";
+                btnConnectHealth.innerText = "เชื่อมต่อสำเร็จ";
+                btnConnectHealth.disabled = true;
+                btnConnectHealth.className = "w-full bg-gray-600 text-white font-bold py-2 px-4 rounded-lg cursor-not-allowed";
+                return true; // (ใหม่!)
+            } else if (params.has('error')) {
+                connectSubtext.innerText = "เกิดข้อผิดพลาด: " + params.get('error');
+                connectSubtext.className = "text-sm text-red-400 mb-4";
+                return true; // (ใหม่!)
+            }
+            return false; // (ใหม่!)
+        }
+
+        // --- Event Listeners (ไม่มีการแก้ไข) ---
+        btnLogin.addEventListener("click", () => { /* ... */ });
+        btnLogout.addEventListener("click", () => { /* ... */ });
+        btnSend.addEventListener("click", async () => { /* ... */ });
+        btnConnectHealth.addEventListener("click", async () => { /* ... */ });
+        
+        btnLogin.addEventListener("click", () => {
+            liff.login({ redirectUri: window.location.href });
+        });
+        btnLogout.addEventListener("click", () => {
+            if (liff.isLoggedIn()) {
+                if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) {
+                    liff.logout();
+                    window.location.reload();
+                }
+            }
+        });
+        btnSend.addEventListener("click", async () => {
+            if (!liff.isInClient()) {
+                alert("ฟีเจอร์นี้ใช้ได้เฉพาะเมื่อเปิดในแอป LINE เท่านั้น");
+                return;
+            }
+            try {
+                const steps = document.getElementById('stepsData').innerText || "N/A";
+                await liff.sendMessages([{ 
+                    type: "text", 
+                    text: `ข้อมูลสุขภาพ (7 วัน): ${steps} ก้าว!` 
+                }]);
+                alert("ส่งข้อความสำเร็จ!");
+                liff.closeWindow();
+            } catch (e) {
+                console.error("Send Message Error:", e);
+                alert("ไม่สามารถส่งข้อความได้: " + e.message);
+            }
+        });
+        btnConnectHealth.addEventListener("click", async () => {
+            try {
+                const profile = await liff.getProfile();
+                const lineUserId = profile.userId;
+                const authUrl = `${SERVER_URL}/auth/google/start?line_user_id=${lineUserId}`;
+                if (liff.isInClient()) {
+                    alert("ระบบจะเปิดเบราว์เซอร์ภายนอก (เช่น Chrome) เพื่อให้คุณล็อกอิน Google...");
+                    liff.openWindow({ url: authUrl, external: true });
+                } else {
+                    window.location.href = authUrl;
+                }
+            } catch (err) {
+                console.error("Error starting auth flow:", err);
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อ: " + err.message);
+            }
+        });
+
+        // Run the app
+        document.addEventListener("DOMContentLoaded", initializeLiff);
+    </script>
+</body>
+</html>
+
+
+
