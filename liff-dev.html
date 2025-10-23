@@ -119,7 +119,16 @@
         async function fetchHealthData(lineUserId) {
             stepsData.innerText = "กำลังโหลด...";
             try {
-                const response = await fetch(`${SERVER_URL}/api/get-steps?line_user_id=${lineUserId}`);
+                // --- ★★★ นี่คือจุดที่แก้ไข (เพิ่ม 4 บรรทัด) ★★★ ---
+                const response = await fetch(`${SERVER_URL}/api/get-steps?line_user_id=${lineUserId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true' // (แก้ปัญหา NGROK)
+                    }
+                });
+                // --- ★★★ สิ้นสุดจุดที่แก้ไข ★★★ ---
+                
                 if (!response.ok) {
                     const errorData = await response.json();
                     if (response.status === 401) { 
