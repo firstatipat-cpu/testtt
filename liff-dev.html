@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LINE Health App (LIFF)</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <!-- Tone.js for Audio -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
@@ -42,15 +38,12 @@
 
     <div class="container mx-auto px-4 py-6 max-w-md">
 
-        <!-- Loading State -->
         <div id="loadingState" class="flex flex-col items-center justify-center min-h-[70vh] text-center p-10">
             <div class="spinner mb-4"></div>
             <p class="text-lg text-gray-500">กำลังโหลด...</p>
         </div>
 
-        <!-- Login State -->
         <div id="loginState" class="hidden text-center p-10 bg-white rounded-xl shadow-lg mt-10">
-            <!-- Login content -->
             <h1 class="text-2xl font-semibold text-green-600 mb-2">LINE Health App</h1>
             <p class="text-gray-600 mb-6">กรุณาล็อกอินด้วยบัญชี LINE ของคุณ</p>
             <button id="btnLogin" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200">
@@ -58,39 +51,34 @@
             </button>
         </div>
 
-        <!-- App State (Logged In) -->
         <div id="appState" class="hidden space-y-6">
 
-            <!-- Header -->
             <div class="mb-4">
                 <h1 class="text-2xl font-semibold text-green-600 mb-1">LINE Health App</h1>
                 <p class="text-gray-600">Track your health with Google Fit</p>
             </div>
 
-            <!-- AI Greeting Message -->
             <div id="greetingSection" class="bg-white rounded-xl p-4 shadow text-center mb-6">
                 <p id="greetingMessage" class="text-gray-700">...</p>
             </div>
 
-            <!-- LINE Profile -->
             <div id="profileSection" class="bg-white rounded-2xl p-6 shadow-lg">
                  <div class="flex items-center gap-4">
-                    <img id="userPicture" class="w-20 h-20 rounded-full border-4 border-green-100 object-cover bg-gray-100 flex-shrink-0" src="https://placehold.co/80x80/E5E7EB/A1A1AA?text=?" alt="User Picture" onerror="this.onerror=null; this.src='https://placehold.co/80x80/E5E7EB/A1A1AA?text=Err';">
-                    <div class="flex-1 min-w-0">
-                        <h2 id="displayName" class="text-xl font-semibold text-gray-900 mb-1 truncate">...</h2>
-                        <p class="text-xs text-gray-500 break-all">
+                     <img id="userPicture" class="w-20 h-20 rounded-full border-4 border-green-100 object-cover bg-gray-100 flex-shrink-0" src="https://placehold.co/80x80/E5E7EB/A1A1AA?text=?" alt="User Picture" onerror="this.onerror=null; this.src='https://placehold.co/80x80/E5E7EB/A1A1AA?text=Err';">
+                     <div class="flex-1 min-w-0">
+                         <h2 id="displayName" class="text-xl font-semibold text-gray-900 mb-1 truncate">...</h2>
+                         <p class="text-xs text-gray-500 break-all">
                              ID: <span id="userId">...</span>
-                        </p>
-                    </div>
-                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.105.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
-                        </svg>
-                    </div>
+                         </p>
+                     </div>
+                     <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                         <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                             <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.105.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+                         </svg>
+                     </div>
                  </div>
             </div>
 
-            <!-- Google Fit Connection -->
             <div id="connectSection" class="mb-6">
                 <button id="btnConnectHealth" class="w-full bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center gap-3 text-gray-700 font-medium disabled:opacity-70 disabled:cursor-not-allowed">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,98 +91,85 @@
                 <p id="connectSubtext" class="text-xs text-gray-500 mt-2 text-center"></p>
             </div>
 
-            <!-- Health Dashboard (CORRECTED ICONS based on screenshot) -->
             <div id="dashboardSection" class="space-y-4">
                  <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-lg font-semibold text-gray-900">Your Health Metrics</h3>
-                    <span id="lastSync" class="text-gray-400 text-xs"></span>
-                </div>
-                <!-- Steps Card -->
-                <div class="bg-white rounded-xl p-6 shadow-md border-0 hover:shadow-lg transition-shadow">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-4 min-w-0">
-                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <!-- ★★★ CORRECTED: Footprints Icon (from screenshot) ★★★ -->
-                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11.5a1.5 1.5 0 01-3 0V9a1.5 1.5 0 013 0v2.5zM8 11.5a1.5 1.5 0 01-3 0V9a1.5 1.5 0 013 0v2.5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 007.5-12.973A4.5 4.5 0 1012 3.053a4.5 4.5 0 10-7.5 5.974A9 9 0 0012 21z"></path></svg>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-sm text-gray-500 truncate">Steps Today</p>
-                                <p id="stepsData" class="text-xl font-semibold text-gray-900 truncate">...</p>
-                            </div>
-                        </div>
-                        <div class="text-right flex-shrink-0 ml-2">
-                            <div id="stepsGoalPercent" class="text-blue-600 text-sm font-medium">--%</div>
-                            <div class="text-gray-400 text-xs">of 10K goal</div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-100 rounded-full h-2 overflow-hidden">
-                        <div id="stepsProgressBar" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div>
-                    </div>
-                </div>
-                <!-- Heart Rate Card -->
+                     <h3 class="text-lg font-semibold text-gray-900">Your Health Metrics</h3>
+                     <span id="lastSync" class="text-gray-400 text-xs"></span>
+                 </div>
                  <div class="bg-white rounded-xl p-6 shadow-md border-0 hover:shadow-lg transition-shadow">
-                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4 min-w-0">
-                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <!-- ★★★ CORRECTED: Heart ECG Icon (from screenshot) ★★★ -->
-                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 010 6.364L12 20.364l7.682-7.682a4.5 4.5 0 01-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 010 6.364z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12h3l2.5-5L11 16l2.5-9.5L16 12h5"></path></svg>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-sm text-gray-500 truncate">Heart Rate (Avg)</p>
-                                <p id="hrData" class="text-xl font-semibold text-gray-900 truncate">... <span class="text-xs font-normal">BPM</span></p>
-                            </div>
-                        </div>
-                        <div id="hrStatus" class="flex items-center gap-2 flex-shrink-0 ml-2">
-                             <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
-                            <span class="text-gray-500 text-sm font-medium">--</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- BMI Card -->
+                     <div class="flex items-center justify-between mb-4">
+                         <div class="flex items-center gap-4 min-w-0">
+                             <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                 <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11.5a1.5 1.5 0 01-3 0V9a1.5 1.5 0 013 0v2.5zM8 11.5a1.5 1.5 0 01-3 0V9a1.5 1.5 0 013 0v2.5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 007.5-12.973A4.5 4.5 0 1012 3.053a4.5 4.5 0 10-7.5 5.974A9 9 0 0012 21z"></path></svg>
+                             </div>
+                             <div class="min-w-0">
+                                 <p class="text-sm text-gray-500 truncate">Steps Today</p>
+                                 <p id="stepsData" class="text-xl font-semibold text-gray-900 truncate">...</p>
+                             </div>
+                         </div>
+                         <div class="text-right flex-shrink-0 ml-2">
+                             <div id="stepsGoalPercent" class="text-blue-600 text-sm font-medium">--%</div>
+                             <div class="text-gray-400 text-xs">of 10K goal</div>
+                         </div>
+                     </div>
+                     <div class="bg-gray-100 rounded-full h-2 overflow-hidden">
+                         <div id="stepsProgressBar" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div>
+                     </div>
+                 </div>
                  <div class="bg-white rounded-xl p-6 shadow-md border-0 hover:shadow-lg transition-shadow">
-                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-4 min-w-0">
-                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <!-- ★★★ CORRECTED: Health Circle Plus Icon (from screenshot) ★★★ -->
-                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-sm text-gray-500 truncate">Body Mass Index</p>
-                                <p id="bmiData" class="text-xl font-semibold text-gray-900 truncate">...</p>
-                            </div>
-                        </div>
-                        <div class="text-right flex-shrink-0 ml-2">
-                             <span id="bmiCategory" class="text-gray-500 font-medium text-sm">--</span>
-                        </div>
-                    </div>
-                </div>
+                       <div class="flex items-center justify-between">
+                           <div class="flex items-center gap-4 min-w-0">
+                               <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                   <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 010 6.364L12 20.364l7.682-7.682a4.5 4.5 0 01-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 010 6.364z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12h3l2.5-5L11 16l2.5-9.5L16 12h5"></path></svg>
+                               </div>
+                               <div class="min-w-0">
+                                   <p class="text-sm text-gray-500 truncate">Heart Rate (Avg)</p>
+                                   <p id="hrData" class="text-xl font-semibold text-gray-900 truncate">... <span class="text-xs font-normal">BPM</span></p>
+                               </div>
+                           </div>
+                           <div id="hrStatus" class="flex items-center gap-2 flex-shrink-0 ml-2">
+                                <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                               <span class="text-gray-500 text-sm font-medium">--</span>
+                           </div>
+                       </div>
+                  </div>
+                 <div class="bg-white rounded-xl p-6 shadow-md border-0 hover:shadow-lg transition-shadow">
+                       <div class="flex items-center justify-between">
+                           <div class="flex items-center gap-4 min-w-0">
+                               <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                   <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                               </div>
+                               <div class="min-w-0">
+                                   <p class="text-sm text-gray-500 truncate">Body Mass Index</p>
+                                   <p id="bmiData" class="text-xl font-semibold text-gray-900 truncate">...</p>
+                               </div>
+                           </div>
+                           <div class="text-right flex-shrink-0 ml-2">
+                                <span id="bmiCategory" class="text-gray-500 font-medium text-sm">--</span>
+                           </div>
+                       </div>
+                  </div>
             </div>
 
-            <!-- Action Buttons -->
             <div id="actionButtons" class="grid grid-cols-2 gap-4 pt-4">
-                <!-- Action buttons content -->
-                 <button id="btnMedication" class="h-auto py-6 flex flex-col items-center justify-center gap-2 bg-gradient-pink-rose hover:bg-gradient-pink-rose-dark shadow-lg text-white rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.368-.825a2 2 0 01-1.022-.547L12.572 11h-1.144l-2.443 2.509a2 2 0 01-1.022.547l-2.368.825a2 2 0 00-1.022.547L3 17.25a2 2 0 002 2h14a2 2 0 002-2l-1.572-1.822zM12 2a4 4 0 014 4h-8a4 4 0 014-4z"></path></svg>
-                    <span class="text-sm font-medium">Medication</span>
-                </button>
-                <button id="btnMeditation" class="h-auto py-6 flex flex-col items-center justify-center gap-2 bg-gradient-indigo-purple hover:bg-gradient-indigo-purple-dark shadow-lg text-white rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-                    <span class="text-sm font-medium">Meditation</span>
-                </button>
+                <button id="btnMedication" class="h-auto py-6 flex flex-col items-center justify-center gap-2 bg-gradient-pink-rose hover:bg-gradient-pink-rose-dark shadow-lg text-white rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
+                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.368-.825a2 2 0 01-1.022-.547L12.572 11h-1.144l-2.443 2.509a2 2 0 01-1.022.547l-2.368.825a2 2 0 00-1.022.547L3 17.25a2 2 0 002 2h14a2 2 0 002-2l-1.572-1.822zM12 2a4 4 0 014 4h-8a4 4 0 014-4z"></path></svg>
+                     <span class="text-sm font-medium">Medication</span>
+                 </button>
+                 <button id="btnMeditation" class="h-auto py-6 flex flex-col items-center justify-center gap-2 bg-gradient-indigo-purple hover:bg-gradient-indigo-purple-dark shadow-lg text-white rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                     <span class="text-sm font-medium">Meditation</span>
+                 </button>
             </div>
 
-            <!-- Logout Button -->
             <button id="btnLogout" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg mt-4 transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                 ออกจากระบบ
             </button>
         </div>
     </div>
 
-    <!-- Modals (Unchanged from v8) -->
-    <!-- Medication Modal -->
     <div id="medicationModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none">
         <div class="modal-content bg-white rounded-lg p-6 max-w-sm w-full shadow-xl transition-transform duration-200">
-            <!-- Medication Modal Content -->
             <div class="flex items-center gap-2 mb-4">
                  <svg class="w-5 h-5 text-pink-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.368-.825a2 2 0 01-1.022-.547L12.572 11h-1.144l-2.443 2.509a2 2 0 01-1.022.547l-2.368.825a2 2 0 00-1.022.547L3 17.25a2 2 0 002 2h14a2 2 0 002-2l-1.572-1.822zM12 2a4 4 0 014 4h-8a4 4 0 014-4z"></path></svg>
                 <h2 class="text-lg font-semibold text-gray-900">Medication Reminder</h2>
@@ -203,20 +178,16 @@
             <button onclick="closeModal('medicationModal')" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium transition duration-200">Close</button>
         </div>
     </div>
-    <!-- Meditation Modal (v8 with Selectable Audio) -->
     <div id="meditationModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none">
          <div class="modal-content bg-white rounded-lg p-6 max-w-sm w-full shadow-xl transition-transform duration-200 relative">
-             <!-- Close button -->
-            <button onclick="closeModal('meditationModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10">
+             <button onclick="closeModal('meditationModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <!-- Header -->
             <div class="flex items-center gap-2 mb-2">
                  <svg class="w-6 h-6 text-indigo-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 <h2 class="text-lg font-semibold text-gray-900">Meditation Session</h2>
             </div>
             <p class="text-gray-500 mb-6 text-sm">Take a moment to relax and focus on your breathing</p>
-            <!-- Timer Display -->
             <div class="relative mb-6">
                 <div class="w-48 h-48 mx-auto relative">
                     <svg class="w-full h-full transform -rotate-90">
@@ -230,15 +201,14 @@
                     </div>
                 </div>
             </div>
-            <!-- Select Sound Section -->
             <div class="space-y-2 mb-6">
                  <label class="text-sm font-medium text-gray-700">Select Sound</label>
+                 
                  <div class="grid grid-cols-2 gap-2">
-                     <button data-sound="pad" class="sound-select-btn control-button-active py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50"> Sound 1 (Calm Pad) </button>
-                      <button data-sound="pluck" class="sound-select-btn control-button-inactive py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50"> Sound 2 (Gentle Plucks) </button>
+                      <button data-sound="song1" class="sound-select-btn control-button-active py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50"> เพลงที่ 1 </button>
+                      <button data-sound="song2" class="sound-select-btn control-button-inactive py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50"> เพลงที่ 2 </button>
                  </div>
-            </div>
-            <!-- Duration Selection -->
+                 </div>
             <div class="space-y-2 mb-6">
                 <label class="text-sm font-medium text-gray-700">Duration</label>
                 <div class="grid grid-cols-4 gap-2">
@@ -248,7 +218,6 @@
                     <button data-duration="900" class="meditation-duration-btn control-button-inactive py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50">15m</button>
                 </div>
             </div>
-            <!-- Timer Controls -->
             <div class="flex gap-3 mb-6">
                 <button id="btnMeditationTogglePlay" class="flex-1 bg-gradient-indigo-purple hover:bg-gradient-indigo-purple-dark text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition duration-200 shadow-md">
                     <svg id="meditationPlayIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
@@ -263,29 +232,30 @@
                      <svg id="audioMuteIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l4-4m0 4l-4-4"></path></svg>
                 </button>
             </div>
-            <!-- Breathing Guide -->
             <div id="breathingGuide" class="text-center p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg hidden">
                 <p class="text-gray-700 mb-1 font-medium">Breathing Guide</p>
                 <p class="text-gray-600 text-sm">หายใจเข้า 4 วิ, กลั้นหายใจ 4 วิ, หายใจออก 4 วิ</p>
             </div>
-        </div>
+         </div>
     </div>
-    <!-- END Meditation Modal -->
-
-
-    <!-- JavaScript Logic (v10 - Unchanged from previous) -->
     <script>
         // --- DOM Elements ---
         // (Copied - No changes needed)
         const loadingState = document.getElementById("loadingState"); const loginState = document.getElementById("loginState"); const appState = document.getElementById("appState"); const btnLogin = document.getElementById("btnLogin"); const btnLogout = document.getElementById("btnLogout"); const btnConnectHealth = document.getElementById("btnConnectHealth"); const userPicture = document.getElementById("userPicture"); const displayName = document.getElementById("displayName"); const userId = document.getElementById("userId"); const greetingMessage = document.getElementById("greetingMessage"); const connectText = document.getElementById("connectText"); const connectSubtext = document.getElementById("connectSubtext"); const connectPulse = document.getElementById("connectPulse"); const lastSync = document.getElementById("lastSync"); const stepsData = document.getElementById("stepsData"); const stepsGoalPercent = document.getElementById("stepsGoalPercent"); const stepsProgressBar = document.getElementById("stepsProgressBar"); const hrData = document.getElementById("hrData"); const hrStatus = document.getElementById("hrStatus"); const bmiData = document.getElementById("bmiData"); const bmiCategory = document.getElementById("bmiCategory"); const btnMedication = document.getElementById("btnMedication"); const btnMeditation = document.getElementById("btnMeditation"); const medicationModal = document.getElementById("medicationModal"); const meditationModal = document.getElementById("meditationModal"); const meditationTimeLeft = document.getElementById("meditationTimeLeft"); const meditationStatus = document.getElementById("meditationStatus"); const meditationProgressCircle = document.getElementById("meditationProgressCircle"); const durationButtons = document.querySelectorAll(".meditation-duration-btn"); const btnMeditationTogglePlay = document.getElementById("btnMeditationTogglePlay"); const meditationPlayIcon = document.getElementById("meditationPlayIcon"); const meditationPauseIcon = document.getElementById("meditationPauseIcon"); const meditationPlayText = document.getElementById("meditationPlayText"); const btnMeditationReset = document.getElementById("btnMeditationReset"); const breathingGuide = document.getElementById("breathingGuide"); const btnAudioToggleMute = document.getElementById("btnAudioToggleMute"); const audioMuteIcon = document.getElementById("audioMuteIcon"); const audioUnmuteIcon = document.getElementById("audioUnmuteIcon"); const soundSelectButtons = document.querySelectorAll(".sound-select-btn");
 
         // --- Configuration ---
+        // (Copied - No changes needed)
         const LIFF_ID = "2008337931-z1xeJb7D"; // 🔸 MUST BE YOUR LIFF ID
         const SERVER_URL = "https://sequential-seborrheal-clelia.ngrok-free.dev"; // 🔗 MUST BE YOUR NGROK URL
 
         // --- State Variables ---
         // (Copied - No changes needed)
-        let meditationTimerInterval = null; let meditationIsPlaying = false; let meditationTimeTotal = 180; let meditationTimeRemaining = 180; let audioPlayers = {}; let currentAudioPlayer = null; let selectedSoundType = 'pad'; let audioIsPlaying = false; let audioIsMuted = false; let isAudioContextStarted = false;
+        let meditationTimerInterval = null; let meditationIsPlaying = false; let meditationTimeTotal = 180; let meditationTimeRemaining = 180; let audioPlayers = {}; let currentAudioPlayer = null; 
+        
+        // 👇 ★★★ [แก้ไข] 1. เปลี่ยนค่าเริ่มต้นเป็น 'song1' ★★★
+        let selectedSoundType = 'song1'; 
+        
+        let audioIsPlaying = false; let audioIsMuted = false; let isAudioContextStarted = false;
 
         // --- UI Functions ---
         // (Copied - No changes needed)
@@ -312,9 +282,84 @@
         function resetMeditationTimer() { stopMeditationTimer(); meditationTimeRemaining = meditationTimeTotal; updateTimerUI(); meditationStatus.innerText = 'Ready'; durationButtons.forEach(btn => btn.disabled = false); soundSelectButtons.forEach(btn => btn.disabled = false); }
         function selectMeditationDuration(duration) { if (meditationIsPlaying) return; meditationTimeTotal = duration; meditationTimeRemaining = duration; updateTimerUI(); durationButtons.forEach(btn => { if (parseInt(btn.dataset.duration) === duration) { btn.classList.add('control-button-active'); btn.classList.remove('control-button-inactive'); } else { btn.classList.remove('control-button-active'); btn.classList.add('control-button-inactive'); } }); console.log(`[Meditation] Duration set to ${duration / 60} minutes`); }
         function selectSound(soundType) { if (meditationIsPlaying) return; selectedSoundType = soundType; soundSelectButtons.forEach(btn => { if (btn.dataset.sound === soundType) { btn.classList.add('control-button-active'); btn.classList.remove('control-button-inactive'); } else { btn.classList.remove('control-button-active'); btn.classList.add('control-button-inactive'); } }); currentAudioPlayer = audioPlayers[selectedSoundType]; console.log(`[Audio] Sound selected: ${soundType}`); }
-        function initializeAudio() { if (Object.keys(audioPlayers).length > 0) return; console.log("[Audio] Initializing Tone.js Synths..."); try { const padSynth = new Tone.AMSynth({ harmonicity: 1.5, oscillator: { type: "sine" }, envelope: { attack: 2, decay: 1, sustain: 0.8, release: 4 }, modulation: { type: "square" }, modulationEnvelope: { attack: 0.5, decay: 0.01, sustain: 1, release: 0.5 } }).toDestination(); padSynth.volume.value = -18; const padSequence = new Tone.Sequence((time, note) => { padSynth.triggerAttackRelease(note, "2n", time); }, ["C3", ["E3", "G3"], "C3", "G2"], "1n"); padSequence.loop = true; audioPlayers['pad'] = padSequence; console.log("[Audio] Pad Synth created."); const pluckSynth = new Tone.PluckSynth({ attackNoise: 0.5, dampening: 4000, resonance: 0.8 }).toDestination(); const reverb = new Tone.Reverb(3).toDestination(); pluckSynth.connect(reverb); pluckSynth.volume.value = -12; const pluckSequence = new Tone.Sequence((time, note) => { pluckSynth.triggerAttack(note, time); }, ["E4", null, "G4", null, "B4", null, "G4", null], "2n"); pluckSequence.loop = true; audioPlayers['pluck'] = pluckSequence; console.log("[Audio] Pluck Synth created."); currentAudioPlayer = audioPlayers[selectedSoundType]; updateMuteButtonUI(); } catch (e) { console.error("[Audio] Error creating Tone.js components:", e); btnAudioToggleMute.disabled = true; soundSelectButtons.forEach(btn => btn.disabled = true); } }
-        function startAudio() { if (!currentAudioPlayer) initializeAudio(); if (!audioIsPlaying && isAudioContextStarted && currentAudioPlayer) { console.log(`[Audio] Starting playback for: ${selectedSoundType}`); Tone.Transport.start(); currentAudioPlayer.start(0); audioIsPlaying = true; } else if (!isAudioContextStarted) { console.warn("[Audio] Cannot start audio - AudioContext not started by user yet."); } else if (!currentAudioPlayer) { console.error("[Audio] Cannot start audio - No player selected/initialized."); } }
-        function stopAudio() { if (audioIsPlaying && currentAudioPlayer) { console.log(`[Audio] Stopping playback for: ${selectedSoundType}`); currentAudioPlayer.stop(); Tone.Transport.stop(); audioIsPlaying = false; } }
+        
+        // 👇 ★★★ [แก้ไข] 2. แทนที่ฟังก์ชัน initializeAudio ทั้งหมด ★★★
+        function initializeAudio() {
+            if (Object.keys(audioPlayers).length > 0) return;
+            console.log("[Audio] Initializing Tone.js Players...");
+
+            try {
+                // ❗❗❗ คุณต้องเปลี่ยนลิงก์เหล่านี้เป็นลิงก์ไฟล์ .mp3 จริงๆ ของคุณ ❗❗❗
+                // และต้องแน่ใจว่าเซิร์ฟเวอร์ของคุณอนุญาตให้เข้าถึงไฟล์ (CORS)
+                const songURLs = {
+                    'song1': 'https://storage.googleapis.com/healthliff/song1.mp3', // <-- ⚠️ แก้ไข URL นี้
+                    'song2': 'https://storage.googleapis.com/healthliff/song2.mp3'  // <-- ⚠️ แก้ไข URL นี้
+                };
+
+                const players = new Tone.Players(songURLs, () => {
+                    // Callback นี้จะทำงานเมื่อโหลดไฟล์เสร็จ
+                    console.log("[Audio] All songs loaded.");
+
+                    // 3. ตั้งค่า Player แต่ละตัว
+                    const player1 = players.player('song1');
+                    player1.loop = true; // ให้เล่นวนซ้ำ
+                    player1.volume.value = -12; // ตั้งค่าความดังตามต้องการ
+                    audioPlayers['song1'] = player1; // เก็บ player ไว้
+
+                    const player2 = players.player('song2');
+                    player2.loop = true; // ให้เล่นวนซ้ำ
+                    player2.volume.value = -12; // ตั้งค่าความดังตามต้องการ
+                    audioPlayers['song2'] = player2; // เก็บ player ไว้
+
+                    // 4. เชื่อมต่อ Player ทั้งหมดไปยังลำโพง
+                    players.toDestination();
+                    
+                    // 5. เลือกเพลงที่ถูกเลือกไว้
+                    // (selectedSoundType ถูกตั้งค่าเริ่มต้นไว้เป็น 'song1' แล้ว)
+                    currentAudioPlayer = audioPlayers[selectedSoundType];
+                    
+                    console.log("[Audio] Players created and ready.");
+                    updateMuteButtonUI();
+
+                }).toDestination(); // เชื่อมต่อตัวจัดการหลักไปที่ลำโพง
+
+            } catch (e) {
+                console.error("[Audio] Error creating Tone.js players:", e);
+                btnAudioToggleMute.disabled = true;
+                soundSelectButtons.forEach(btn => btn.disabled = true);
+            }
+        }
+
+        // 👇 ★★★ [แก้ไข] 3. แก้ไขฟังก์ชัน startAudio (ไม่ต้องใช้ Transport) ★★★
+        function startAudio() {
+            if (!currentAudioPlayer) {
+                console.warn("[Audio] No audio player selected or player is not loaded yet.");
+                if (Object.keys(audioPlayers).length === 0) {
+                    initializeAudio(); // ลองโหลดถ้ายังไม่ได้โหลด
+                }
+                return; 
+            }
+
+            if (!audioIsPlaying && isAudioContextStarted) {
+                console.log(`[Audio] Starting playback for: ${selectedSoundType}`);
+                currentAudioPlayer.start(); // <--- เปลี่ยนจาก Transport
+                audioIsPlaying = true;
+            } else if (!isAudioContextStarted) {
+                console.warn("[Audio] Cannot start audio - AudioContext not started by user yet.");
+            } else if (!currentAudioPlayer) {
+                console.error("[Audio] Cannot start audio - No player selected/initialized.");
+            }
+        }
+
+        // 👇 ★★★ [แก้ไข] 4. แก้ไขฟังก์ชัน stopAudio (ไม่ต้องใช้ Transport) ★★★
+        function stopAudio() {
+            if (audioIsPlaying && currentAudioPlayer) {
+                console.log(`[Audio] Stopping playback for: ${selectedSoundType}`);
+                currentAudioPlayer.stop(); // <--- เปลี่ยนจาก Transport
+                audioIsPlaying = false;
+            }
+        }
+        
         function toggleAudioMute() { if (!isAudioContextStarted) { console.warn("[Audio] Cannot toggle mute - AudioContext not started."); return; } if (Object.keys(audioPlayers).length === 0) initializeAudio(); audioIsMuted = !audioIsMuted; Tone.Destination.mute = audioIsMuted; updateMuteButtonUI(); console.log(`[Audio] Mute toggled: ${audioIsMuted}`); }
         function updateMuteButtonUI() { if (audioIsMuted) { audioMuteIcon.classList.remove('hidden'); audioUnmuteIcon.classList.add('hidden'); } else { audioMuteIcon.classList.add('hidden'); audioUnmuteIcon.classList.remove('hidden'); } }
 
@@ -328,12 +373,11 @@
 
         // --- Event Listeners ---
         // (Copied - No changes needed)
-        btnLogin.addEventListener("click", () => { console.log("[LIFF] Login button clicked."); liff.login({ redirectUri: window.location.href }); }); btnLogout.addEventListener("click", () => { if (liff.isLoggedIn()) { console.log("[LIFF] Logout button clicked."); if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) { console.log("[LIFF] Logging out..."); liff.logout(); window.location.reload(); } else { console.log("[LIFF] Logout cancelled."); } } }); btnConnectHealth.addEventListener("click", async () => { if (btnConnectHealth.disabled) return; console.log("[LIFF] Connect Health button clicked."); btnConnectHealth.disabled = true; connectText.innerText = "Connecting..."; connectPulse.classList.add('hidden'); try { const profile = await liff.getProfile(); const lineUserId = profile.userId; const authUrl = `${SERVER_URL}/auth/google/start?line_user_id=${lineUserId}`; console.log(`[LIFF] Starting auth flow for ${lineUserId} at ${authUrl}`); if (liff.isInClient()) { console.log("[LIFF] Opening external window for auth."); alert("ระบบจะเปิดเบราว์เซอร์ภายนอกเพื่อให้คุณล็อกอิน Google..."); liff.openWindow({ url: authUrl, external: true }); } else { console.log("[LIFF] Redirecting in current window for auth."); window.location.href = authUrl; } } catch (err) { console.error("[LIFF] Error starting auth flow:", err); alert("เกิดข้อผิดพลาดในการเชื่อมต่อ: " + err.message); updateConnectButton(false, "Connection Error"); } }); btnMedication.addEventListener("click", () => { console.log("[LIFF] Medication button clicked."); openModal('medicationModal'); }); btnMeditation.addEventListener("click", async () => { console.log("[LIFF] Meditation button clicked."); if (!isAudioContextStarted && Tone.context.state !== 'running') { try { await Tone.start(); console.log('[Audio] AudioContext started by button click.'); isAudioContextStarted = true; initializeAudio(); } catch (e) { console.error("[Audio] Failed to start AudioContext:", e); alert("Could not start audio."); return; } } selectSound(selectedSoundType); selectMeditationDuration(meditationTimeTotal); openModal('meditationModal'); }); btnMeditationTogglePlay.addEventListener('click', () => { if (meditationIsPlaying) { stopMeditationTimer(); } else { if (!isAudioContextStarted) { Tone.start().then(() => { console.log('[Audio] AudioContext started by Play button.'); isAudioContextStarted = true; initializeAudio(); startMeditationTimer(); }).catch(e => console.error("[Audio] Failed to start AudioContext on Play:", e)); } else { startMeditationTimer(); } } }); btnMeditationReset.addEventListener('click', resetMeditationTimer); durationButtons.forEach(button => { button.addEventListener('click', () => { const duration = parseInt(button.dataset.duration); selectMeditationDuration(duration); }); }); soundSelectButtons.forEach(button => { button.addEventListener('click', () => { const soundType = button.dataset.sound; selectSound(soundType); }); }); btnAudioToggleMute.addEventListener('click', toggleAudioMute);
+        btnLogin.addEventListener("click", () => { console.log("[LIFF] Login button clicked."); liff.login({ redirectUri: window.location.href }); }); btnLogout.addEventListener("click", () => { if (liff.isLoggedIn()) { console.log("[LIFF] Logout button clicked."); if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) { console.log("[LIFF] Logging out..."); liff.logout(); window.location.reload(); } else { console.log("[LIFF] Logout cancelled."); } } }); btnConnectHealth.addEventListener("click", async () => { if (btnConnectHealth.disabled) return; console.log("[LIFF] Connect Health button clicked."); btnConnectHealth.disabled = true; connectText.innerText = "Connecting..."; connectPulse.classList.add('hidden'); try { const profile = await liff.getProfile(); const lineUserId = profile.userId; const authUrl = `${SERVER_URL}/auth/google/start?line_user_id=${lineUserId}`; console.log(`[LIFF] Starting auth flow for ${lineUserId} at ${authUrl}`); if (liff.isInClient()) { console.log("[LIFF] Opening external window for auth."); alert("ระบบจะเปิดเบราว์เซอร์ภายนอกเพื่อให้คุณล็อกอิน Google..."); liff.openWindow({ url: authUrl, external: true }); } else { console.log("[LIFF] Redirecting in current window for auth."); window.location.href = authUrl; } } catch (err) { console.error("[LIFF] Error starting auth flow:", err); alert("เกิดข้อผิดพลาดในการเชื่อมต่อ: " + err.message); updateConnectButton(false, "Connection Error"); } }); btnMedication.addEventListener("click", () => { console.log("[LIFF] Medication button clicked."); openModal('medicationModal'); }); btnMeditation.addEventListener("click", async () => { console.log("[LIFF] Meditation button clicked."); if (!isAudioContextStarted && Tone.context.state !== 'running') { try { await Tone.start(); console.log('[Audio] AudioContext started by button click.'); isAudioContextStarted = true; initializeAudio(); } catch (e) { console.error("[Audio] Failed to start AudioContext:", e); alert("Could not start audio."); return; } } selectSound(selectedSoundType); selectMeditationDuration(meditationTimeTotal); openModal('mediditationModal'); }); btnMeditationTogglePlay.addEventListener('click', () => { if (meditationIsPlaying) { stopMeditationTimer(); } else { if (!isAudioContextStarted) { Tone.start().then(() => { console.log('[Audio] AudioContext started by Play button.'); isAudioContextStarted = true; initializeAudio(); startMeditationTimer(); }).catch(e => console.error("[Audio] Failed to start AudioContext on Play:", e)); } else { startMeditationTimer(); } } }); btnMeditationReset.addEventListener('click', resetMeditationTimer); durationButtons.forEach(button => { button.addEventListener('click', () => { const duration = parseInt(button.dataset.duration); selectMeditationDuration(duration); }); }); soundSelectButtons.forEach(button => { button.addEventListener('click', () => { const soundType = button.dataset.sound; selectSound(soundType); }); }); btnAudioToggleMute.addEventListener('click', toggleAudioMute);
 
         // --- Run ---
         document.addEventListener("DOMContentLoaded", initializeLiff);
 
     </script>
-</body>
+    </body>
 </html>
-
