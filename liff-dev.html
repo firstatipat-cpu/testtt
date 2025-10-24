@@ -1,128 +1,245 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <!-- (ส่วน Head เหมือนเดิม) -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แดชบอร์ดสุขภาพ LIFF</title>
+    <title>LINE Health App (LIFF)</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* Apply Thai font primarily */
         body { font-family: 'Noto Sans Thai', 'Inter', sans-serif; }
+        /* Simple modal styles */
+        .modal { display: none; /* Hidden by default */ }
+        .modal.is-open { display: flex; /* Shown when class is added */ }
+        /* Add custom gradient for buttons based on React components */
+        .bg-gradient-pink-rose { background-image: linear-gradient(to bottom right, #EC4899, #F43F5E); }
+        .hover\:bg-gradient-pink-rose-dark:hover { background-image: linear-gradient(to bottom right, #DB2777, #E11D48); }
+        .bg-gradient-indigo-purple { background-image: linear-gradient(to bottom right, #6366F1, #A855F7); }
+        .hover\:bg-gradient-indigo-purple-dark:hover { background-image: linear-gradient(to bottom right, #4F46E5, #9333EA); }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen font-sans">
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen">
 
-    <div class="container mx-auto p-4 max-w-md">
+    <div class="container mx-auto px-4 py-6 max-w-md">
 
-        <!-- (Loading และ Login States เหมือนเดิม) -->
+        <!-- Loading State -->
         <div id="loadingState" class="text-center p-10">
-            <p class="text-lg text-gray-400">กำลังโหลดข้อมูล...</p>
+            <p class="text-lg text-gray-500">กำลังโหลด...</p>
+            <!-- Optional: Add a spinner -->
+            <svg class="animate-spin h-5 w-5 text-gray-400 mx-auto mt-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
         </div>
-        <div id="loginState" class="hidden text-center p-10 bg-gray-800 rounded-lg shadow-lg">
-            <h1 class="text-2xl font-bold mb-4">แดชบอร์ดสุขภาพ</h1>
-            <p class="text-gray-300 mb-6">กรุณาล็อกอินด้วยบัญชี LINE ของคุณเพื่อเริ่มต้นใช้งาน</p>
+
+        <!-- Login State -->
+        <div id="loginState" class="hidden text-center p-10 bg-white rounded-lg shadow-md">
+            <h1 class="text-2xl font-bold text-green-600 mb-4">LINE Health App</h1>
+            <p class="text-gray-600 mb-6">กรุณาล็อกอินด้วยบัญชี LINE ของคุณ</p>
             <button id="btnLogin" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200">
                 เข้าสู่ระบบด้วย LINE
             </button>
         </div>
 
-        <!-- สถานะ: ล็อกอินแล้ว (หน้าแอปหลัก) -->
+        <!-- App State (Logged In) -->
         <div id="appState" class="hidden space-y-6">
-            
-            <!-- (ส่วนโปรไฟล์ เหมือนเดิม) -->
-            <div id="profileSection" class="bg-gray-800 rounded-lg p-5 flex items-center space-x-4 shadow-lg">
-                <img id="userPicture" class="w-16 h-16 rounded-full border-2 border-green-400" src="https://placehold.co/100x100/333/FFF?text=?" alt="User Picture">
-                <div>
-                    <h1 id="displayName" class="text-xl font-bold text-white">...</h1>
-                    <p class="text-xs text-gray-400 break-all">
-                        <span class="font-medium">User ID:</span> <span id="userId">...</span>
-                    </p>
+
+            <!-- Header -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-semibold text-green-600 mb-1">LINE Health App</h1>
+                <p class="text-gray-600">Track your health with Google Fit</p>
+            </div>
+
+            <!-- LINE Profile (from LineProfile.tsx) -->
+            <div id="profileSection" class="bg-white rounded-2xl p-6 shadow-lg">
+                 <div class="flex items-center gap-4">
+                    <!-- Image with Fallback Placeholder -->
+                    <img id="userPicture" class="w-20 h-20 rounded-full border-4 border-green-100 object-cover bg-gray-100" src="https://placehold.co/80x80/E5E7EB/A1A1AA?text=?" alt="User Picture" onerror="this.onerror=null; this.src='https://placehold.co/80x80/E5E7EB/A1A1AA?text=Err';">
+                    <div class="flex-1 min-w-0"> {/* Added min-w-0 for text truncation */}
+                        <h2 id="displayName" class="text-xl font-semibold text-gray-900 mb-1 truncate">...</h2>
+                        <p class="text-xs text-gray-500 break-all">
+                             ID: <span id="userId">...</span>
+                        </p>
+                    </div>
+                    <!-- LINE Icon -->
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.105.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+                        </svg>
+                    </div>
+                 </div>
+            </div>
+
+            <!-- Google Fit Connection (Matches App.tsx design) -->
+            <div id="connectSection" class="mb-6">
+                <button id="btnConnectHealth" class="w-full bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center gap-3 text-gray-700 font-medium disabled:opacity-70 disabled:cursor-not-allowed">
+                     <!-- Google Fit Icon SVG -->
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                         <path d="M12 2L2 7V17C2 19.7614 6.47715 22 12 22C17.5228 22 22 19.7614 22 17V7L12 2Z" fill="#4285F4"/>
+                         <path d="M10.0001 16L6.00006 12L7.41006 10.59L10.0001 13.17L16.5901 6.58L18.0001 8L10.0001 16Z" fill="white"/>
+                    </svg>
+                    <span id="connectText">Connect to Google Fit</span>
+                    <div id="connectPulse" class="w-3 h-3 bg-green-500 rounded-full animate-pulse hidden ml-2"></div>
+                </button>
+                <p id="connectSubtext" class="text-xs text-gray-500 mt-2 text-center"></p>
+            </div>
+
+            <!-- Health Dashboard (from HealthDashboard.tsx) -->
+            <div id="dashboardSection" class="space-y-4">
+                 <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-lg font-semibold text-gray-900">Your Health Metrics</h3>
+                    <span id="lastSync" class="text-gray-400 text-xs"></span>
+                </div>
+
+                <!-- Steps Card -->
+                <div class="bg-white rounded-xl p-6 shadow-md border-0 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <!-- Activity Icon -->
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Steps Today</p>
+                                <p id="stepsData" class="text-xl font-semibold text-gray-900">...</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="stepsGoalPercent" class="text-blue-600 text-sm font-medium">--%</div>
+                            <div class="text-gray-400 text-xs">of 10K goal</div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-100 rounded-full h-2 overflow-hidden">
+                        <div id="stepsProgressBar" class="bg-blue-500 h-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Heart Rate Card -->
+                 <div class="bg-white rounded-xl p-6 shadow-md border-0 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <!-- Heart Icon -->
+                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 010 6.364L12 20.364l7.682-7.682a4.5 4.5 0 01-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 010 6.364z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Heart Rate (Avg)</p>
+                                <p id="hrData" class="text-xl font-semibold text-gray-900">... <span class="text-xs font-normal">BPM</span></p>
+                            </div>
+                        </div>
+                        <div id="hrStatus" class="flex items-center gap-2">
+                             <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                            <span class="text-gray-500 text-sm font-medium">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BMI Card -->
+                 <div class="bg-white rounded-xl p-6 shadow-md border-0 hover:shadow-lg transition-shadow">
+                     <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <!-- Scale Icon -->
+                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3-1m0 0l3 1m-3-1v11m6-11l-3-1m0 0l-3 1m3-1v11m6-11l3 1m0 0l-3 9a5.002 5.002 0 01-6.001 0M18 7l3-1m0 0l-3 1m-6-4a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Body Mass Index</p>
+                                <p id="bmiData" class="text-xl font-semibold text-gray-900">...</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                             <span id="bmiCategory" class="text-gray-500 font-medium text-sm">--</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- (อัปเกรด!) ส่วนแดชบอร์ด (เพิ่ม 2 การ์ดใหม่) -->
-            <div id="dashboardSection">
-                <h2 class="text-2xl font-bold text-green-400 mb-4">แดชบอร์ด 7 วันล่าสุด</h2>
-                <!-- (ใหม่!) เปลี่ยนเป็น grid-cols-2 -->
-                <div class="grid grid-cols-2 gap-4">
-                    
-                    <!-- การ์ดจำนวนก้าว (ขยายเต็ม) -->
-                    <div class="col-span-2 bg-gray-800 p-4 rounded-lg text-center shadow">
-                        <svg class="w-8 h-8 text-green-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <p class="text-sm text-gray-300">รวมจำนวนก้าว (7 วัน)</p>
-                        <p id="stepsData" class="text-3xl font-bold text-gray-400">—</p> 
-                    </div>
-
-                    <!-- (ใหม่!) การ์ด Heart Rate -->
-                    <div class="col-span-1 bg-gray-800 p-4 rounded-lg text-center shadow">
-                        <svg class="w-8 h-8 text-red-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 010 6.364L12 20.364l7.682-7.682a4.5 4.5 0 01-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 01-6.364 0z"></path></svg>
-                        <p class="text-sm text-gray-300">Heart Rate (เฉลี่ย)</p>
-                        <p id="heartRateData" class="text-3xl font-bold text-gray-400">—</p> 
-                    </div>
-
-                    <!-- (ใหม่!) การ์ด BMI -->
-                    <div class="col-span-1 bg-gray-800 p-4 rounded-lg text-center shadow">
-                        <svg class="w-8 h-8 text-blue-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        <p class="text-sm text-gray-300">ค่า BMI (เฉลี่ย)</p>
-                        <p id="bmiData" class="text-3xl font-bold text-gray-400">—</p> 
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- (ส่วนเชื่อมต่อ API เหมือนเดิม) -->
-            <div class="bg-gray-800 p-5 rounded-lg shadow-lg">
-                <h3 class="font-bold text-lg mb-2">เชื่อมต่อข้อมูลสุขภาพ</h3>
-                <p id="connectSubtext" class="text-sm text-gray-300 mb-4">เชื่อมต่อกับ Google Fit เพื่อซิงค์ข้อมูลของคุณโดยอัตโนมัติ</p>
-                <button id="btnConnectHealth" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                    เชื่อมต่อ Google Fit
+            <!-- Action Buttons (from ActionButtons.tsx) -->
+            <div id="actionButtons" class="grid grid-cols-2 gap-4 pt-4">
+                <button id="btnMedication" class="h-auto py-6 flex flex-col items-center justify-center gap-2 bg-gradient-pink-rose hover:bg-gradient-pink-rose-dark shadow-lg text-white rounded-xl transition duration-200">
+                    <!-- Pill Icon -->
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.368-.825a2 2 0 01-1.022-.547L12.572 11h-1.144l-2.443 2.509a2 2 0 01-1.022.547l-2.368.825a2 2 0 00-1.022.547L3 17.25a2 2 0 002 2h14a2 2 0 002-2l-1.572-1.822zM12 2a4 4 0 014 4h-8a4 4 0 014-4z"></path></svg>
+                    <span class="text-sm font-medium">Medication</span>
+                </button>
+                <button id="btnMeditation" class="h-auto py-6 flex flex-col items-center justify-center gap-2 bg-gradient-indigo-purple hover:bg-gradient-indigo-purple-dark shadow-lg text-white rounded-xl transition duration-200">
+                    <!-- Brain Icon -->
+                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                    <span class="text-sm font-medium">Meditation</span>
                 </button>
             </div>
-            
-            <!-- (ส่วนปุ่ม LIFF เหมือนเดิม) -->
-            <div class="flex space-x-2">
-                <button id="btnSend" class="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg">
-                    ส่งข้อมูลผ่าน LINE
-                </button>
-                <button id="btnLogout" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg">
-                    ออกจากระบบ
-                </button>
-            </div>
+
+            <!-- Logout Button (Simplified) -->
+            <button id="btnLogout" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg mt-4 transition duration-200">
+                ออกจากระบบ
+            </button>
         </div>
     </div>
 
-    <!-- โค้ด JavaScript สำหรับ LIFF -->
-    <script>
-        // --- ★★★★★ ตั้งค่าตัวแปรสำคัญ ★★★★★ ---
-        // (กรุณาตรวจสอบว่า 2 ค่านี้ถูกต้อง)
-        const LIFF_ID = "2008337931-z1xeJb7D"; // (LIFF ID ของคุณ)
-        const SERVER_URL = "https://sequential-seborrheal-clelia.ngrok-free.dev"; // (NGROK URL ของคุณ)
-        // --- ★★★★★ สิ้นสุดการตั้งค่า ★★★★★ ---
+    <!-- Modal Placeholders (Hidden by default) -->
+    <!-- Medication Modal (Basic Structure) -->
+    <div id="medicationModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
+            <div class="flex items-center gap-2 mb-4">
+                 <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.368-.825a2 2 0 01-1.022-.547L12.572 11h-1.144l-2.443 2.509a2 2 0 01-1.022.547l-2.368.825a2 2 0 00-1.022.547L3 17.25a2 2 0 002 2h14a2 2 0 002-2l-1.572-1.822zM12 2a4 4 0 014 4h-8a4 4 0 014-4z"></path></svg>
+                <h2 class="text-lg font-semibold text-gray-900">Medication Reminder</h2>
+            </div>
+            <p class="text-gray-600 mb-6 text-sm">ตั้งการแจ้งเตือนเพื่อทานยาให้ตรงเวลา ฟีเจอร์นี้ยังไม่พร้อมใช้งาน</p>
+            <button onclick="closeModal('medicationModal')" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 rounded-lg text-sm font-medium">Close</button>
+        </div>
+    </div>
+    <!-- Meditation Modal (Basic Structure) -->
+    <div id="meditationModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+         <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl">
+            <div class="flex items-center gap-2 mb-4">
+                 <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                <h2 class="text-lg font-semibold text-gray-900">Meditation Session</h2>
+            </div>
+            <p class="text-gray-600 mb-6 text-sm">ใช้เวลาผ่อนคลายและฝึกสมาธิ ฟีเจอร์นี้ยังไม่พร้อมใช้งาน</p>
+            <button onclick="closeModal('meditationModal')" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 rounded-lg text-sm font-medium">Close</button>
+        </div>
+    </div>
 
-        // (อัปเกรด!) DOM Elements (เพิ่ม 2 ID ใหม่)
+
+    <!-- JavaScript Logic (Same as v5 Fix) -->
+    <script>
+        // --- DOM Elements ---
         const loadingState = document.getElementById("loadingState");
         const loginState = document.getElementById("loginState");
         const appState = document.getElementById("appState");
         const btnLogin = document.getElementById("btnLogin");
         const btnLogout = document.getElementById("btnLogout");
-        const btnSend = document.getElementById("btnSend");
         const btnConnectHealth = document.getElementById("btnConnectHealth");
         const userPicture = document.getElementById("userPicture");
         const displayName = document.getElementById("displayName");
         const userId = document.getElementById("userId");
+        const connectText = document.getElementById("connectText");
         const connectSubtext = document.getElementById("connectSubtext");
+        const connectPulse = document.getElementById("connectPulse"); // New
+        const lastSync = document.getElementById("lastSync");
         const stepsData = document.getElementById("stepsData");
-        const heartRateData = document.getElementById("heartRateData"); // (ใหม่!)
-        const bmiData = document.getElementById("bmiData"); // (ใหม่!)
+        const stepsGoalPercent = document.getElementById("stepsGoalPercent");
+        const stepsProgressBar = document.getElementById("stepsProgressBar");
+        const hrData = document.getElementById("hrData");
+        const hrStatus = document.getElementById("hrStatus");
+        const bmiData = document.getElementById("bmiData");
+        const bmiCategory = document.getElementById("bmiCategory");
+        const btnMedication = document.getElementById("btnMedication");
+        const btnMeditation = document.getElementById("btnMeditation");
+        const medicationModal = document.getElementById("medicationModal");
+        const meditationModal = document.getElementById("meditationModal");
 
-        // (UI Functions - เหมือนเดิม)
-        function showLoading() { /* ... */ }
-        function showLogin() { /* ... */ }
-        function showApp() { /* ... */ }
+        // --- Configuration ---
+        const LIFF_ID = "2008337931-z1xeJb7D"; // 🔸เปลี่ยนเป็น LIFF ID ของคุณ
+        const SERVER_URL = "https://sequential-seborrheal-clelia.ngrok-free.dev"; // 🔗 เปลี่ยนเป็น ngrok ของคุณเองทุกครั้ง
+
+        // --- UI Functions ---
         function showLoading() {
             loadingState.style.display = "block";
             loginState.style.display = "none";
@@ -138,76 +255,118 @@
             loginState.style.display = "none";
             appState.style.display = "block";
         }
-        
-        // (ใหม่!) Helper Function สำหรับปลดล็อกปุ่ม (กรณีต้อง Re-auth)
-        function resetConnectButton(message) {
-            stepsData.innerText = "-";
-            heartRateData.innerText = "-";
-            bmiData.innerText = "-";
-            stepsData.className = "text-3xl font-bold text-gray-400";
-            heartRateData.className = "text-3xl font-bold text-gray-400";
-            bmiData.className = "text-3xl font-bold text-gray-400";
-
-            connectSubtext.innerText = message || "โปรดเชื่อมต่อ Google Fit ก่อน";
-            connectSubtext.className = "text-sm text-yellow-400 mb-4";
-            btnConnectHealth.innerText = "เชื่อมต่อ Google Fit (ต้องเชื่อมต่อใหม่)";
-            btnConnectHealth.disabled = false;
-            btnConnectHealth.className = "w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200";
+        function updateConnectButton(connected, message = null) {
+            if (connected) {
+                connectText.innerText = "Connected"; // Shorter text
+                btnConnectHealth.classList.add("bg-green-100", "text-green-700", "cursor-not-allowed");
+                btnConnectHealth.classList.remove("bg-white", "hover:shadow-lg");
+                btnConnectHealth.disabled = true;
+                connectPulse.classList.remove("hidden"); // Show pulse
+                connectSubtext.innerText = message || `Last sync: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                connectSubtext.className = "text-xs text-green-600 mt-2 text-center";
+            } else {
+                connectText.innerText = "Connect to Google Fit";
+                btnConnectHealth.classList.remove("bg-green-100", "text-green-700", "cursor-not-allowed");
+                btnConnectHealth.classList.add("bg-white", "hover:shadow-lg");
+                btnConnectHealth.disabled = false;
+                connectPulse.classList.add("hidden"); // Hide pulse
+                connectSubtext.innerText = message || "เชื่อมต่อเพื่อซิงค์ข้อมูล";
+                connectSubtext.className = `text-xs mt-2 text-center ${message ? 'text-red-500' : 'text-gray-500'}`;
+            }
+        }
+        function getBMICategory(bmi) {
+            if (bmi <= 0) return { text: "--", color: "text-gray-500" };
+            if (bmi < 18.5) return { text: "Underweight", color: "text-blue-600" };
+            if (bmi < 25) return { text: "Normal", color: "text-green-600" };
+            if (bmi < 30) return { text: "Overweight", color: "text-orange-600" };
+            return { text: "Obese", color: "text-red-600" };
+        }
+        function getHRStatus(hr) {
+            if (hr <= 0) return { text: "--", color: "bg-gray-400", textColor: "text-gray-500" };
+            if (hr < 60) return { text: "Low", color: "bg-blue-500", textColor: "text-blue-600" };
+            if (hr <= 100) return { text: "Normal", color: "bg-green-500", textColor: "text-green-600" };
+            return { text: "High", color: "bg-red-500", textColor: "text-red-600" };
         }
 
+        // --- Modal Functions ---
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.add('is-open');
+        }
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) modal.classList.remove('is-open');
+        }
 
-        // (อัปเกรด!) ฟังก์ชันดึงข้อมูลสุขภาพ (v2)
+        // --- Fetch Health Data ---
         async function fetchHealthData(lineUserId) {
-            stepsData.innerText = "กำลังโหลด...";
-            heartRateData.innerText = "กำลังโหลด...";
-            bmiData.innerText = "กำลังโหลด...";
-            
+            // Reset UI slightly differently for loading state
+            stepsData.innerText = "Loading...";
+            hrData.innerText = "... BPM";
+            bmiData.innerText = "...";
+            lastSync.innerText = "";
+            stepsGoalPercent.innerText = "--%";
+            stepsProgressBar.style.width = "0%";
+            bmiCategory.innerText = "--";
+            bmiCategory.className = "text-gray-500 font-medium text-sm";
+             hrStatus.innerHTML = `<div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div><span class="text-gray-500 text-sm font-medium">Loading...</span>`; // Loading HR status
+
             try {
-                // 1. (อัปเกรด!) เรียก API Endpoint ใหม่
                 const response = await fetch(`${SERVER_URL}/api/get-dashboard-data?line_user_id=${lineUserId}`, {
                     method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true' // (แก้ NGROK)
+                        'ngrok-skip-browser-warning': 'true' // Skip ngrok warning page
                     }
                 });
-                
+
                 if (!response.ok) {
                     const errorData = await response.json();
-                    // (สำคัญ!) ถ้าสิทธิ์ไม่พอ (401) หรือ (403)
-                    if (response.status === 401 || response.status === 403) { 
-                        resetConnectButton(errorData.error || "สิทธิ์ไม่เพียงพอ โปรดเชื่อมต่อใหม่");
+                    if (response.status === 401 || response.status === 403) {
+                        updateConnectButton(false, errorData.error || "Please connect Google Fit");
+                        stepsData.innerText = "-";
+                        hrData.innerText = "- BPM";
+                        bmiData.innerText = "-";
                     } else {
-                        throw new Error(errorData.error || "Server error");
+                        throw new Error(errorData.error || `Server error ${response.status}`);
                     }
                     return;
                 }
-                
+
                 const data = await response.json();
 
-                // 2. (อัปเกรด!) แสดงผลข้อมูล 3 ค่า
-                stepsData.innerText = data.totalSteps.toLocaleString() || "0";
-                heartRateData.innerText = data.avgHeartRate.toLocaleString() || "0";
-                bmiData.innerText = data.bmi.toLocaleString() || "0";
-                
-                // 3. (อัปเกรด!) เปลี่ยนสีและปิดปุ่ม
-                stepsData.className = "text-3xl font-bold text-white";
-                heartRateData.className = "text-3xl font-bold text-white";
-                bmiData.className = "text-3xl font-bold text-white";
+                // Update UI with fetched data
+                stepsData.innerText = data.totalSteps.toLocaleString();
+                const goalPercent = Math.min(Math.round((data.totalSteps / 10000) * 100), 100);
+                stepsGoalPercent.innerText = `${goalPercent}%`;
+                stepsProgressBar.style.width = `${goalPercent}%`;
 
-                connectSubtext.innerText = "เชื่อมต่อกับ Google Fit สำเร็จแล้ว";
-                connectSubtext.className = "text-sm text-green-400 mb-4";
-                btnConnectHealth.innerText = "เชื่อมต่อสำเร็จ";
-                btnConnectHealth.disabled = true;
-                btnConnectHealth.className = "w-full bg-gray-600 text-white font-bold py-2 px-4 rounded-lg cursor-not-allowed";
+                hrData.innerText = `${data.avgHeartRate} BPM`;
+                const hrStat = getHRStatus(data.avgHeartRate);
+                hrStatus.innerHTML = `<div class="w-2 h-2 ${hrStat.color} rounded-full ${data.avgHeartRate > 0 ? 'animate-pulse' : ''}"></div><span class="${hrStat.textColor} text-sm font-medium">${hrStat.text}</span>`;
+
+
+                bmiData.innerText = data.bmi.toFixed(1);
+                const bmiCat = getBMICategory(data.bmi);
+                bmiCategory.innerText = bmiCat.text;
+                bmiCategory.className = `${bmiCat.color} font-medium text-sm`;
+
+                lastSync.innerText = `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                updateConnectButton(true);
 
             } catch (err) {
                 console.error("Fetch Health Data Error:", err);
-                resetConnectButton("ไม่สามารถดึงข้อมูลได้: " + err.message);
+                stepsData.innerText = "-";
+                hrData.innerText = "- BPM";
+                bmiData.innerText = "-";
+                updateConnectButton(false, `Fetch Error`); // Keep error message concise
+                connectSubtext.innerText = `Error: ${err.message}`; // Show detailed error here
+                connectSubtext.className = "text-xs text-red-500 mt-2 text-center";
+                 hrStatus.innerHTML = `<div class="w-2 h-2 bg-red-400 rounded-full"></div><span class="text-red-500 text-sm font-medium">Error</span>`; // Error HR status
+
             }
         }
 
-        // (Main LIFF Initialization - เหมือนเดิม)
+        // --- LIFF Initialization ---
         async function initializeLiff() {
             showLoading();
             try {
@@ -219,105 +378,95 @@
                     showApp();
                     const profile = await liff.getProfile();
                     userPicture.src = profile.pictureUrl;
+                    // Add fallback for image load error
+                    userPicture.onerror = () => {
+                         userPicture.src='https://placehold.co/80x80/E5E7EB/A1A1AA?text=Err';
+                         console.warn("Failed to load profile picture.");
+                    };
                     displayName.innerText = profile.displayName;
                     userId.innerText = profile.userId;
-                    
-                    const isConnected = checkUrlParams(); 
-                    if (!isConnected) {
-                        await fetchHealthData(profile.userId);
-                    } else {
-                        setTimeout(() => {
-                            fetchHealthData(profile.userId);
-                        }, 1000); 
-                    }
+
+                    const isConnected = checkUrlParams(); // Check if just returned from OAuth
+                     if (!isConnected) await fetchHealthData(profile.userId); // Fetch data if logged in and not redirecting
                 }
             } catch (e) {
                 console.error("LIFF Init Error:", e);
                 showLogin();
             }
         }
-        
-        // (ฟังก์ชันตรวจสอบ URL - เหมือนเดิม)
+
+        // --- Check URL Params ---
         function checkUrlParams() {
             const params = new URLSearchParams(window.location.search);
+            let processedParams = false; // Flag to indicate if params were processed
             if (params.has('connect') && params.get('connect') === 'success') {
-                connectSubtext.innerText = "เชื่อมต่อ Google Fit สำเร็จแล้ว! กำลังดึงข้อมูล...";
-                connectSubtext.className = "text-sm text-green-400 mb-4";
-                btnConnectHealth.innerText = "เชื่อมต่อสำเร็จ";
-                btnConnectHealth.disabled = true;
-                btnConnectHealth.className = "w-full bg-gray-600 text-white font-bold py-2 px-4 rounded-lg cursor-not-allowed";
-                return true;
+                updateConnectButton(true, "เชื่อมต่อสำเร็จ! กำลังดึงข้อมูล...");
+                processedParams = true;
+                // Fetch data immediately after successful connection
+                liff.getProfile().then(profile => fetchHealthData(profile.userId));
             } else if (params.has('error')) {
-                connectSubtext.innerText = "เกิดข้อผิดพลาด: " + params.get('error');
-                connectSubtext.className = "text-sm text-red-400 mb-4";
-                // (ใหม่!) ถ้า Error ให้ปลดล็อกปุ่ม
-                resetConnectButton("เกิดข้อผิดพลาด: " + params.get('error'));
-                return true;
+                const errorMsg = params.get('error');
+                updateConnectButton(false, `Connection failed: ${errorMsg}`);
+                processedParams = true;
             }
-            return false;
+
+            // Clear URL params if they were processed
+            if (processedParams) {
+                 window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            return processedParams; // Return true if redirected back
         }
 
-        // --- Event Listeners (อัปเกรดปุ่ม Send) ---
+        // --- Event Listeners ---
         btnLogin.addEventListener("click", () => {
             liff.login({ redirectUri: window.location.href });
         });
 
         btnLogout.addEventListener("click", () => {
             if (liff.isLoggedIn()) {
+                // Using simple confirm
                 if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) {
                     liff.logout();
                     window.location.reload();
                 }
             }
         });
-        
-        btnSend.addEventListener("click", async () => {
-            if (!liff.isInClient()) {
-                alert("ฟีเจอร์นี้ใช้ได้เฉพาะเมื่อเปิดในแอป LINE เท่านั้น");
-                return;
-            }
-            try {
-                // (ใหม่!) ดึงข้อมูล 3 ค่ามาส่ง
-                const steps = document.getElementById('stepsData').innerText || "N/A";
-                const hr = document.getElementById('heartRateData').innerText || "N/A";
-                const bmi = document.getElementById('bmiData').innerText || "N/A";
-                
-                const message = `ข้อมูลสุขภาพ (7 วัน):\n- จำนวนก้าว: ${steps} ก้าว\n- Heart Rate: ${hr} bpm\n- BMI: ${bmi}`;
 
-                await liff.sendMessages([{ 
-                    type: "text", 
-                    text: message
-                }]);
-                alert("ส่งข้อความสำเร็จ!");
-                liff.closeWindow();
-            } catch (e) {
-                console.error("Send Message Error:", e);
-                alert("ไม่สามารถส่งข้อความได้: " + e.message);
-            }
-        });
-        
-        // (ปุ่ม Connect - เหมือนเดิม)
         btnConnectHealth.addEventListener("click", async () => {
+            // Prevent clicking if already trying to connect or connected
+            if (btnConnectHealth.disabled) return;
+            btnConnectHealth.disabled = true; // Disable temporarily
+            connectText.innerText = "Connecting...";
+
             try {
                 const profile = await liff.getProfile();
                 const lineUserId = profile.userId;
                 const authUrl = `${SERVER_URL}/auth/google/start?line_user_id=${lineUserId}`;
                 if (liff.isInClient()) {
+                     // Using simple alert
                     alert("ระบบจะเปิดเบราว์เซอร์ภายนอกเพื่อให้คุณล็อกอิน Google...");
                     liff.openWindow({ url: authUrl, external: true });
+                     // Re-enable button after a delay in case user cancels external window
+                    setTimeout(() => { if (!btnConnectHealth.innerText.includes("Connected")) btnConnectHealth.disabled = false; connectText.innerText = "Connect to Google Fit"; }, 5000);
                 } else {
-                    window.location.href = authUrl;
+                    window.location.href = authUrl; // Open in same window if outside LINE
                 }
             } catch (err) {
                 console.error("Error starting auth flow:", err);
                 alert("เกิดข้อผิดพลาดในการเชื่อมต่อ: " + err.message);
+                btnConnectHealth.disabled = false; // Re-enable on error
+                connectText.innerText = "Connect to Google Fit";
             }
         });
 
-        // Run the app
+        // Modal triggers
+        btnMedication.addEventListener("click", () => openModal('medicationModal'));
+        btnMeditation.addEventListener("click", () => openModal('meditationModal'));
+
+        // --- Run ---
         document.addEventListener("DOMContentLoaded", initializeLiff);
+
     </script>
 </body>
 </html>
-
 
