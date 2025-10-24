@@ -27,12 +27,15 @@
         .hover\:bg-gradient-indigo-purple-dark:hover { background-image: linear-gradient(to bottom right, #4F46E5, #9333EA); }
         .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #059669; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        /* Active/Inactive button styles */
-        .control-button-active { background-color: #6366F1 !important; color: white !important; border-color: transparent !important; }
-        .control-button-inactive { background-color: #F3F4F6; color: #4B5563; border-color: transparent; }
-        .control-button-inactive:hover { background-color: #E5E7EB; }
+        /* Active/Inactive button styles (Matches Figma) */
+        .control-button-active { background-color: #8B5CF6 !important; /* purple-500 */ color: white !important; border-color: transparent !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);}
+        .control-button-inactive { background-color: #F3F4F6; /* gray-100 */ color: #4B5563; /* gray-600 */ border-color: transparent; }
+        .control-button-inactive:hover:not(:disabled) { background-color: #E5E7EB; /* gray-200 */ }
         /* Progress Circle Transition */
         #meditationProgressCircle { transition: stroke-dashoffset 1s linear; }
+        /* Gradient for progress circle */
+        #meditationGradient stop[offset="0%"] { stop-color: #8B5CF6; } /* purple-500 */
+        #meditationGradient stop[offset="100%"] { stop-color: #6366F1; } /* indigo-500 */
     </style>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen">
@@ -100,7 +103,7 @@
                 <p id="connectSubtext" class="text-xs text-gray-500 mt-2 text-center"></p>
             </div>
 
-            <!-- Health Dashboard -->
+            <!-- Health Dashboard (CORRECTED ICONS) -->
             <div id="dashboardSection" class="space-y-4">
                  <div class="flex items-center justify-between mb-2">
                     <h3 class="text-lg font-semibold text-gray-900">Your Health Metrics</h3>
@@ -108,15 +111,11 @@
                 </div>
                 <!-- Steps Card -->
                 <div class="bg-white rounded-xl p-6 shadow-md border-0 hover:shadow-lg transition-shadow">
-                    <!-- Steps content -->
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-4 min-w-0">
                             <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <!-- ★★★ REPLACE THIS SVG (Steps) ★★★ -->
-                                <!-- <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> -->
-                                <!-- ★★★ WITH THIS SVG (Footprints) ★★★ -->
-                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v-2.38c0-.7.23-1.4.64-1.95.4-.55.97-1 1.64-1.3.75-.36 1.6-.55 2.5-.55s1.75.2 2.5.55c.67.3 1.24.75 1.64 1.3.4.55.64 1.25.64 1.95V16"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 16v-2.38c0-.7.23-1.4.64-1.95.4-.55.97-1 1.64-1.3.75-.36 1.6-.55 2.5-.55s1.75.2 2.5.55c.67.3 1.24.75 1.64 1.3.4.55.64 1.25.64 1.95V16"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21v-4l1.2-1.2"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-4l-1.2-1.2"></path></svg>
-                                <!-- ★★★ END REPLACEMENT ★★★ -->
+                                <!-- ★★★ CORRECTED: Footprints Icon (from screenshot) ★★★ -->
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11.5a1.5 1.5 0 01-3 0V9a1.5 1.5 0 013 0v2.5zM8 11.5a1.5 1.5 0 01-3 0V9a1.5 1.5 0 013 0v2.5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 007.5-12.973A4.5 4.5 0 1012 3.053a4.5 4.5 0 10-7.5 5.974A9 9 0 0012 21z"></path></svg>
                             </div>
                             <div class="min-w-0">
                                 <p class="text-sm text-gray-500 truncate">Steps Today</p>
@@ -134,15 +133,11 @@
                 </div>
                 <!-- Heart Rate Card -->
                  <div class="bg-white rounded-xl p-6 shadow-md border-0 hover:shadow-lg transition-shadow">
-                    <!-- Heart Rate content -->
                      <div class="flex items-center justify-between">
                         <div class="flex items-center gap-4 min-w-0">
                             <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <!-- ★★★ REPLACE THIS SVG (Heart Rate) ★★★ -->
-                                <!-- <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 010 6.364L12 20.364l7.682-7.682a4.5 4.5 0 01-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 010 6.364z"></path></svg> -->
-                                <!-- ★★★ WITH THIS SVG (Heart Pulse) ★★★ -->
-                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 010 6.364L12 20.364l7.682-7.682a4.5 4.5 0 01-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 010 6.364z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.5 12.5l2-2 2 2 2-2 2 2"></path></svg>
-                                <!-- ★★★ END REPLACEMENT ★★★ -->
+                                <!-- ★★★ CORRECTED: Heart ECG Icon (from screenshot) ★★★ -->
+                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 010 6.364L12 20.364l7.682-7.682a4.5 4.5 0 01-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 010 6.364z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12h3l2.5-5L11 16l2.5-9.5L16 12h5"></path></svg>
                             </div>
                             <div class="min-w-0">
                                 <p class="text-sm text-gray-500 truncate">Heart Rate (Avg)</p>
@@ -157,15 +152,11 @@
                 </div>
                 <!-- BMI Card -->
                  <div class="bg-white rounded-xl p-6 shadow-md border-0 hover:shadow-lg transition-shadow">
-                     <!-- BMI content -->
                      <div class="flex items-center justify-between">
                         <div class="flex items-center gap-4 min-w-0">
                             <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <!-- ★★★ REPLACE THIS SVG (BMI) ★★★ -->
-                                <!-- <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3-1m0 0l3 1m-3-1v11m6-11l-3-1m0 0l-3 1m3-1v11m6-11l3 1m0 0l-3 9a5.002 5.002 0 01-6.001 0M18 7l3-1m0 0l-3 1m-6-4a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> -->
-                                <!-- ★★★ WITH THIS SVG (Weight) ★★★ -->
-                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536M12 21a9 9 0 110-18 9 9 0 010 18z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v18"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9"></path></svg>
-                                <!-- ★★★ END REPLACEMENT ★★★ -->
+                                <!-- ★★★ CORRECTED: Health Circle Plus Icon (from screenshot) ★★★ -->
+                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
                             <div class="min-w-0">
                                 <p class="text-sm text-gray-500 truncate">Body Mass Index</p>
@@ -181,7 +172,8 @@
 
             <!-- Action Buttons -->
             <div id="actionButtons" class="grid grid-cols-2 gap-4 pt-4">
-                <button id="btnMedication" class="h-auto py-6 flex flex-col items-center justify-center gap-2 bg-gradient-pink-rose hover:bg-gradient-pink-rose-dark shadow-lg text-white rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
+                <!-- Action buttons content -->
+                 <button id="btnMedication" class="h-auto py-6 flex flex-col items-center justify-center gap-2 bg-gradient-pink-rose hover:bg-gradient-pink-rose-dark shadow-lg text-white rounded-xl transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.368-.825a2 2 0 01-1.022-.547L12.572 11h-1.144l-2.443 2.509a2 2 0 01-1.022.547l-2.368.825a2 2 0 00-1.022.547L3 17.25a2 2 0 002 2h14a2 2 0 002-2l-1.572-1.822zM12 2a4 4 0 014 4h-8a4 4 0 014-4z"></path></svg>
                     <span class="text-sm font-medium">Medication</span>
                 </button>
@@ -198,7 +190,7 @@
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- Modals (Unchanged from v8) -->
     <!-- Medication Modal -->
     <div id="medicationModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none">
         <div class="modal-content bg-white rounded-lg p-6 max-w-sm w-full shadow-xl transition-transform duration-200">
@@ -211,12 +203,11 @@
             <button onclick="closeModal('medicationModal')" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium transition duration-200">Close</button>
         </div>
     </div>
-
-    <!-- Meditation Modal (v8 - Selectable Audio) -->
+    <!-- Meditation Modal (v8 with Selectable Audio) -->
     <div id="meditationModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none">
          <div class="modal-content bg-white rounded-lg p-6 max-w-sm w-full shadow-xl transition-transform duration-200 relative">
              <!-- Close button -->
-            <button onclick="closeModal('meditationModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+            <button onclick="closeModal('meditationModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             <!-- Header -->
@@ -224,11 +215,9 @@
                  <svg class="w-6 h-6 text-indigo-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 <h2 class="text-lg font-semibold text-gray-900">Meditation Session</h2>
             </div>
-            <p class="text-gray-500 mb-6 text-sm">Take a moment to relax and focus on your breathing</p> <!-- Reduced margin -->
-
+            <p class="text-gray-500 mb-6 text-sm">Take a moment to relax and focus on your breathing</p>
             <!-- Timer Display -->
-            <div class="relative mb-6"> <!-- Reduced margin -->
-                <!-- Timer SVG and text -->
+            <div class="relative mb-6">
                 <div class="w-48 h-48 mx-auto relative">
                     <svg class="w-full h-full transform -rotate-90">
                         <circle cx="96" cy="96" r="88" stroke="#E5E7EB" stroke-width="8" fill="none" />
@@ -241,24 +230,16 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ★★★ NEW: Select Sound Section ★★★ -->
+            <!-- Select Sound Section -->
             <div class="space-y-2 mb-6">
                  <label class="text-sm font-medium text-gray-700">Select Sound</label>
                  <div class="grid grid-cols-2 gap-2">
-                     <button data-sound="pad" class="sound-select-btn control-button-active py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50">
-                         Sound 1 (Calm Pad)
-                     </button>
-                      <button data-sound="pluck" class="sound-select-btn control-button-inactive py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50">
-                         Sound 2 (Gentle Plucks)
-                     </button>
+                     <button data-sound="pad" class="sound-select-btn control-button-active py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50"> Sound 1 (Calm Pad) </button>
+                      <button data-sound="pluck" class="sound-select-btn control-button-inactive py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50"> Sound 2 (Gentle Plucks) </button>
                  </div>
             </div>
-            <!-- ★★★ END NEW SECTION ★★★ -->
-
-
             <!-- Duration Selection -->
-            <div class="space-y-2 mb-6"> <!-- Reduced margin -->
+            <div class="space-y-2 mb-6">
                 <label class="text-sm font-medium text-gray-700">Duration</label>
                 <div class="grid grid-cols-4 gap-2">
                     <button data-duration="180" class="meditation-duration-btn control-button-active py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50">3m</button>
@@ -267,586 +248,87 @@
                     <button data-duration="900" class="meditation-duration-btn control-button-inactive py-2 rounded-lg text-sm font-medium transition duration-200 disabled:opacity-50">15m</button>
                 </div>
             </div>
-
             <!-- Timer Controls -->
             <div class="flex gap-3 mb-6">
-                <!-- Play/Pause Button -->
                 <button id="btnMeditationTogglePlay" class="flex-1 bg-gradient-indigo-purple hover:bg-gradient-indigo-purple-dark text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition duration-200 shadow-md">
                     <svg id="meditationPlayIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
                     <svg id="meditationPauseIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 011-1h1a1 1 0 110 2H8a1 1 0 01-1-1zm5 0a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
                     <span id="meditationPlayText" class="text-base">Start</span>
                 </button>
-                <!-- Reset Button -->
                 <button id="btnMeditationReset" class="p-3 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-100 transition duration-200 shadow-sm">
                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9M3.22 13.582A8.001 8.001 0 0019.418 15M20 20v-5h-.581"></path></svg>
                 </button>
-                <!-- Mute/Unmute Button -->
                 <button id="btnAudioToggleMute" class="p-3 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-100 transition duration-200 shadow-sm" title="Mute/Unmute Sound">
                      <svg id="audioUnmuteIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
                      <svg id="audioMuteIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l4-4m0 4l-4-4"></path></svg>
                 </button>
             </div>
-
             <!-- Breathing Guide -->
             <div id="breathingGuide" class="text-center p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg hidden">
                 <p class="text-gray-700 mb-1 font-medium">Breathing Guide</p>
                 <p class="text-gray-600 text-sm">หายใจเข้า 4 วิ, กลั้นหายใจ 4 วิ, หายใจออก 4 วิ</p>
             </div>
-
         </div>
     </div>
     <!-- END Meditation Modal -->
 
 
-    <!-- JavaScript Logic (v8 - Selectable Audio) -->
+    <!-- JavaScript Logic (v9 - Unchanged from previous) -->
     <script>
         // --- DOM Elements ---
         // (Copied - No changes needed)
-        const loadingState = document.getElementById("loadingState");
-        const loginState = document.getElementById("loginState");
-        const appState = document.getElementById("appState");
-        const btnLogin = document.getElementById("btnLogin");
-        const btnLogout = document.getElementById("btnLogout");
-        const btnConnectHealth = document.getElementById("btnConnectHealth");
-        const userPicture = document.getElementById("userPicture");
-        const displayName = document.getElementById("displayName");
-        const userId = document.getElementById("userId");
-        const greetingMessage = document.getElementById("greetingMessage");
-        const connectText = document.getElementById("connectText");
-        const connectSubtext = document.getElementById("connectSubtext");
-        const connectPulse = document.getElementById("connectPulse");
-        const lastSync = document.getElementById("lastSync");
-        const stepsData = document.getElementById("stepsData");
-        const stepsGoalPercent = document.getElementById("stepsGoalPercent");
-        const stepsProgressBar = document.getElementById("stepsProgressBar");
-        const hrData = document.getElementById("hrData");
-        const hrStatus = document.getElementById("hrStatus");
-        const bmiData = document.getElementById("bmiData");
-        const bmiCategory = document.getElementById("bmiCategory");
-        const btnMedication = document.getElementById("btnMedication");
-        const btnMeditation = document.getElementById("btnMeditation");
-        const medicationModal = document.getElementById("medicationModal");
-        // Meditation Modal Elements
-        const meditationModal = document.getElementById("meditationModal");
-        const meditationTimeLeft = document.getElementById("meditationTimeLeft");
-        const meditationStatus = document.getElementById("meditationStatus");
-        const meditationProgressCircle = document.getElementById("meditationProgressCircle");
-        const durationButtons = document.querySelectorAll(".meditation-duration-btn");
-        const btnMeditationTogglePlay = document.getElementById("btnMeditationTogglePlay");
-        const meditationPlayIcon = document.getElementById("meditationPlayIcon");
-        const meditationPauseIcon = document.getElementById("meditationPauseIcon");
-        const meditationPlayText = document.getElementById("meditationPlayText");
-        const btnMeditationReset = document.getElementById("btnMeditationReset");
-        const breathingGuide = document.getElementById("breathingGuide");
-        // Audio Elements
-        const btnAudioToggleMute = document.getElementById("btnAudioToggleMute");
-        const audioMuteIcon = document.getElementById("audioMuteIcon");
-        const audioUnmuteIcon = document.getElementById("audioUnmuteIcon");
-        const soundSelectButtons = document.querySelectorAll(".sound-select-btn"); // ★★★ NEW ★★★
-
+        const loadingState = document.getElementById("loadingState"); const loginState = document.getElementById("loginState"); const appState = document.getElementById("appState"); const btnLogin = document.getElementById("btnLogin"); const btnLogout = document.getElementById("btnLogout"); const btnConnectHealth = document.getElementById("btnConnectHealth"); const userPicture = document.getElementById("userPicture"); const displayName = document.getElementById("displayName"); const userId = document.getElementById("userId"); const greetingMessage = document.getElementById("greetingMessage"); const connectText = document.getElementById("connectText"); const connectSubtext = document.getElementById("connectSubtext"); const connectPulse = document.getElementById("connectPulse"); const lastSync = document.getElementById("lastSync"); const stepsData = document.getElementById("stepsData"); const stepsGoalPercent = document.getElementById("stepsGoalPercent"); const stepsProgressBar = document.getElementById("stepsProgressBar"); const hrData = document.getElementById("hrData"); const hrStatus = document.getElementById("hrStatus"); const bmiData = document.getElementById("bmiData"); const bmiCategory = document.getElementById("bmiCategory"); const btnMedication = document.getElementById("btnMedication"); const btnMeditation = document.getElementById("btnMeditation"); const medicationModal = document.getElementById("medicationModal"); const meditationModal = document.getElementById("meditationModal"); const meditationTimeLeft = document.getElementById("meditationTimeLeft"); const meditationStatus = document.getElementById("meditationStatus"); const meditationProgressCircle = document.getElementById("meditationProgressCircle"); const durationButtons = document.querySelectorAll(".meditation-duration-btn"); const btnMeditationTogglePlay = document.getElementById("btnMeditationTogglePlay"); const meditationPlayIcon = document.getElementById("meditationPlayIcon"); const meditationPauseIcon = document.getElementById("meditationPauseIcon"); const meditationPlayText = document.getElementById("meditationPlayText"); const btnMeditationReset = document.getElementById("btnMeditationReset"); const breathingGuide = document.getElementById("breathingGuide"); const btnAudioToggleMute = document.getElementById("btnAudioToggleMute"); const audioMuteIcon = document.getElementById("audioMuteIcon"); const audioUnmuteIcon = document.getElementById("audioUnmuteIcon"); const soundSelectButtons = document.querySelectorAll(".sound-select-btn");
 
         // --- Configuration ---
         const LIFF_ID = "2008337931-z1xeJb7D"; // 🔸 MUST BE YOUR LIFF ID
         const SERVER_URL = "https://sequential-seborrheal-clelia.ngrok-free.dev"; // 🔗 MUST BE YOUR NGROK URL
 
-        // --- Meditation State ---
-        let meditationTimerInterval = null;
-        let meditationIsPlaying = false;
-        let meditationTimeTotal = 180; // Default 3 minutes
-        let meditationTimeRemaining = 180;
-
-        // --- Tone.js Audio State (UPDATED for selectable sounds) ---
-        let audioPlayers = {}; // Will hold Tone.Player objects { 'pad': player, 'pluck': player }
-        let currentAudioPlayer = null; // The player currently active or ready
-        let selectedSoundType = 'pad'; // ★★★ NEW ★★★ Default sound
-        let audioIsPlaying = false;
-        let audioIsMuted = false;
-        let isAudioContextStarted = false;
+        // --- State Variables ---
+        // (Copied - No changes needed)
+        let meditationTimerInterval = null; let meditationIsPlaying = false; let meditationTimeTotal = 180; let meditationTimeRemaining = 180; let audioPlayers = {}; let currentAudioPlayer = null; let selectedSoundType = 'pad'; let audioIsPlaying = false; let audioIsMuted = false; let isAudioContextStarted = false;
 
         // --- UI Functions ---
-        function showLoading() { /* ... */ }
-        function showLogin() { /* ... */ }
-        function showApp() { /* ... */ }
-        function updateConnectButton(connected, message = null) { /* ... */ }
-        function getBMICategory(bmi) { /* ... */ }
-        function getHRStatus(hr) { /* ... */ }
-        // --- (Copied from previous version - No changes needed) ---
-        function showLoading() {
-            loadingState.style.display = "flex";
-            loginState.style.display = "none";
-            appState.style.display = "none";
-        }
-        function showLogin() {
-            loadingState.style.display = "none";
-            loginState.style.display = "block";
-            appState.style.display = "none";
-        }
-        function showApp() {
-            loadingState.style.display = "none";
-            loginState.style.display = "none";
-            appState.style.display = "block";
-        }
-        function updateConnectButton(connected, message = null) {
-            if (connected) {
-                connectText.innerText = "Connected";
-                btnConnectHealth.classList.add("bg-green-100", "text-green-700", "cursor-not-allowed");
-                btnConnectHealth.classList.remove("bg-white", "hover:shadow-lg");
-                btnConnectHealth.disabled = true;
-                connectPulse.classList.remove("hidden");
-                connectSubtext.innerText = message || `Last sync: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-                connectSubtext.className = "text-xs text-green-600 mt-2 text-center";
-            } else {
-                connectText.innerText = "Connect to Google Fit";
-                btnConnectHealth.classList.remove("bg-green-100", "text-green-700", "cursor-not-allowed");
-                btnConnectHealth.classList.add("bg-white", "hover:shadow-lg");
-                btnConnectHealth.disabled = false;
-                connectPulse.classList.add("hidden");
-                connectSubtext.innerText = message || "เชื่อมต่อเพื่อซิงค์ข้อมูล";
-                connectSubtext.className = `text-xs mt-2 text-center ${message ? 'text-red-500' : 'text-gray-500'}`;
-            }
-        }
-        function getBMICategory(bmi) {
-            if (bmi <= 0) return { text: "--", color: "text-gray-500" };
-            if (bmi < 18.5) return { text: "Underweight", color: "text-blue-600" };
-            if (bmi < 25) return { text: "Normal", color: "text-green-600" };
-            if (bmi < 30) return { text: "Overweight", color: "text-orange-600" };
-            return { text: "Obese", color: "text-red-600" };
-        }
-        function getHRStatus(hr) {
-            if (hr <= 0) return { text: "--", color: "bg-gray-400", textColor: "text-gray-500" };
-            if (hr < 60) return { text: "Resting", color: "bg-blue-500", textColor: "text-blue-600" };
-            if (hr <= 100) return { text: "Normal", color: "bg-green-500", textColor: "text-green-600" };
-            return { text: "Elevated", color: "bg-red-500", textColor: "text-red-600" };
-        }
-        // --- End Copied UI Functions ---
+        // (Copied - No changes needed)
+        function showLoading() { loadingState.style.display = "flex"; loginState.style.display = "none"; appState.style.display = "none"; } function showLogin() { loadingState.style.display = "none"; loginState.style.display = "block"; appState.style.display = "none"; } function showApp() { loadingState.style.display = "none"; loginState.style.display = "none"; appState.style.display = "block"; } function updateConnectButton(connected, message = null) { if (connected) { connectText.innerText = "Connected"; btnConnectHealth.classList.add("bg-green-100", "text-green-700", "cursor-not-allowed"); btnConnectHealth.classList.remove("bg-white", "hover:shadow-lg"); btnConnectHealth.disabled = true; connectPulse.classList.remove("hidden"); connectSubtext.innerText = message || `Last sync: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`; connectSubtext.className = "text-xs text-green-600 mt-2 text-center"; } else { connectText.innerText = "Connect to Google Fit"; btnConnectHealth.classList.remove("bg-green-100", "text-green-700", "cursor-not-allowed"); btnConnectHealth.classList.add("bg-white", "hover:shadow-lg"); btnConnectHealth.disabled = false; connectPulse.classList.add("hidden"); connectSubtext.innerText = message || "เชื่อมต่อเพื่อซิงค์ข้อมูล"; connectSubtext.className = `text-xs mt-2 text-center ${message ? 'text-red-500' : 'text-gray-500'}`; } } function getBMICategory(bmi) { if (bmi <= 0) return { text: "--", color: "text-gray-500" }; if (bmi < 18.5) return { text: "Underweight", color: "text-blue-600" }; if (bmi < 25) return { text: "Normal", color: "text-green-600" }; if (bmi < 30) return { text: "Overweight", color: "text-orange-600" }; return { text: "Obese", color: "text-red-600" }; } function getHRStatus(hr) { if (hr <= 0) return { text: "--", color: "bg-gray-400", textColor: "text-gray-500" }; if (hr < 60) return { text: "Resting", color: "bg-blue-500", textColor: "text-blue-600" }; if (hr <= 100) return { text: "Normal", color: "bg-green-500", textColor: "text-green-600" }; return { text: "Elevated", color: "bg-red-500", textColor: "text-red-600" }; }
 
-        // --- Modal Functions (Handles Audio Setup & Reset) ---
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('is-open');
-                void modal.offsetWidth;
-                modal.classList.add('opacity-100', 'pointer-events-auto');
-                modal.querySelector('.modal-content').classList.add('scale-100');
-                modal.querySelector('.modal-content').classList.remove('scale-95');
-
-                if (modalId === 'meditationModal') {
-                    resetMeditationTimer(); // Reset timer and UI on open
-                    selectSound(selectedSoundType); // Apply default or last selected sound style
-                    selectMeditationDuration(meditationTimeTotal); // Apply default or last selected duration style
-                    initializeAudio(); // Prepare audio players if not already done
-                    updateMuteButtonUI();
-                }
-            }
-        }
-        function closeModal(modalId) {
-             const modal = document.getElementById(modalId);
-             if (modal && modal.classList.contains('is-open')) {
-                modal.classList.add('is-closing');
-                modal.classList.remove('opacity-100', 'pointer-events-auto');
-                modal.querySelector('.modal-content').classList.remove('scale-100');
-                modal.querySelector('.modal-content').classList.add('scale-95');
-
-                if (modalId === 'meditationModal') {
-                    stopMeditationTimer(); // Stop timer if running
-                    stopAudio(); // Stop audio if running
-                }
-
-                setTimeout(() => {
-                    modal.classList.remove('is-open', 'is-closing');
-                }, 200);
-            }
-        }
-         // Close modal on outside click
-        window.addEventListener('click', (event) => {
-            if (event.target.classList.contains('modal')) {
-                if (medicationModal.classList.contains('is-open')) closeModal('medicationModal');
-                if (meditationModal.classList.contains('is-open')) closeModal('meditationModal');
-            }
-        });
+        // --- Modal Functions ---
+        // (Copied - No changes needed)
+        function openModal(modalId) { const modal = document.getElementById(modalId); if (modal) { modal.classList.add('is-open'); void modal.offsetWidth; modal.classList.add('opacity-100', 'pointer-events-auto'); modal.querySelector('.modal-content').classList.add('scale-100'); modal.querySelector('.modal-content').classList.remove('scale-95'); if (modalId === 'meditationModal') { resetMeditationTimer(); selectSound(selectedSoundType); selectMeditationDuration(meditationTimeTotal); initializeAudio(); updateMuteButtonUI(); } } } function closeModal(modalId) { const modal = document.getElementById(modalId); if (modal && modal.classList.contains('is-open')) { modal.classList.add('is-closing'); modal.classList.remove('opacity-100', 'pointer-events-auto'); modal.querySelector('.modal-content').classList.remove('scale-100'); modal.querySelector('.modal-content').classList.add('scale-95'); if (modalId === 'meditationModal') { stopMeditationTimer(); stopAudio(); } setTimeout(() => { modal.classList.remove('is-open', 'is-closing'); }, 200); } } window.addEventListener('click', (event) => { if (event.target.classList.contains('modal')) { if (medicationModal.classList.contains('is-open')) closeModal('medicationModal'); if (meditationModal.classList.contains('is-open')) closeModal('meditationModal'); } });
 
         // --- AI Greeting Logic ---
-        function generateGreeting(username) { /* ... (same as before) ... */ }
-        function generateGreeting(username) {
-            const hour = new Date().getHours();
-            let timeOfDayGreeting = "";
-            let suggestion = "";
-
-            if (hour < 12) {
-                timeOfDayGreeting = "สวัสดีตอนเช้า";
-                suggestion = "อย่าลืมลุกมาขยับตัว ออกกำลังกายบ้างนะคะ 💪";
-            } else if (hour < 18) {
-                timeOfDayGreeting = "สวัสดีตอนบ่าย";
-                suggestion = "พักดื่มน้ำ ยืดเส้นยืดสายสักหน่อยนะคะ 💧";
-            } else {
-                timeOfDayGreeting = "สวัสดีตอนเย็น";
-                suggestion = "วันนี้ทำกิจกรรมอะไรมาบ้าง อย่าลืมพักผ่อนนะคะ 🌙";
-            }
-
-            const suggestions = [
-                 "อย่าลืมขยับตัว ออกกำลังกายบ้างนะคะ 💪",
-                 "ดื่มน้ำให้เพียงพอตลอดวันนะคะ 💧",
-                 "หาเวลาพักผ่อนสายตาบ้างนะคะ 👀",
-                 "ทานอาหารที่มีประโยชน์ด้วยนะคะ 🍎",
-                 "วันนี้อากาศดี ออกไปเดินเล่นไหมคะ? 🚶‍♀️"
-            ];
-             if (hour < 12) {
-                 suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
-             }
-
-            return `${timeOfDayGreeting} คุณ${username}! ${suggestion}`;
-        }
-
+        // (Copied - No changes needed)
+        function generateGreeting(username) { const hour = new Date().getHours(); let timeOfDayGreeting = ""; let suggestion = ""; if (hour < 12) { timeOfDayGreeting = "สวัสดีตอนเช้า"; suggestion = "อย่าลืมลุกมาขยับตัว ออกกำลังกายบ้างนะคะ 💪"; } else if (hour < 18) { timeOfDayGreeting = "สวัสดีตอนบ่าย"; suggestion = "พักดื่มน้ำ ยืดเส้นยืดสายสักหน่อยนะคะ 💧"; } else { timeOfDayGreeting = "สวัสดีตอนเย็น"; suggestion = "วันนี้ทำกิจกรรมอะไรมาบ้าง อย่าลืมพักผ่อนนะคะ 🌙"; } const suggestions = [ "อย่าลืมขยับตัว ออกกำลังกายบ้างนะคะ 💪", "ดื่มน้ำให้เพียงพอตลอดวันนะคะ 💧", "หาเวลาพักผ่อนสายตาบ้างนะคะ 👀", "ทานอาหารที่มีประโยชน์ด้วยนะคะ 🍎", "วันนี้อากาศดี ออกไปเดินเล่นไหมคะ? 🚶‍♀️" ]; if (hour < 12) { suggestion = suggestions[Math.floor(Math.random() * suggestions.length)]; } return `${timeOfDayGreeting} คุณ${username}! ${suggestion}`; }
 
         // --- Fetch Health Data ---
-        async function fetchHealthData(lineUserId) { /* ... (same as before) ... */ }
-        async function fetchHealthData(lineUserId) {
-            // (Same exact fetch logic as v7 - No changes needed here)
-             stepsData.innerText = "Loading..."; hrData.innerText = "... BPM"; bmiData.innerText = "..."; lastSync.innerText = ""; stepsGoalPercent.innerText = "--%"; stepsProgressBar.style.width = "0%"; bmiCategory.innerText = "--"; bmiCategory.className = "text-gray-500 font-medium text-sm"; hrStatus.innerHTML = `<div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div><span class="text-gray-500 text-sm font-medium">Loading...</span>`; try { console.log(`[LIFF] Fetching data for ${lineUserId}`); const response = await fetch(`${SERVER_URL}/api/get-dashboard-data?line_user_id=${lineUserId}`, { method: 'GET', headers: { 'ngrok-skip-browser-warning': 'true' } }); console.log(`[LIFF] Fetch response status: ${response.status}`); if (!response.ok) { const errorText = await response.text(); let errorData; try { errorData = JSON.parse(errorText); } catch (e) { console.error("[LIFF] Failed to parse error response as JSON:", errorText); errorData = { error: `Server error ${response.status}: ${errorText.substring(0, 100)}` }; } console.error("[LIFF] Fetch error:", errorData); updateConnectButton(false, response.status === 401 || response.status === 403 ? (errorData.error || "Please reconnect Google Fit") : `Server Error ${response.status}`); stepsData.innerText = "-"; hrData.innerText = "- BPM"; bmiData.innerText = "-"; hrStatus.innerHTML = `<div class="w-2 h-2 bg-red-400 rounded-full"></div><span class="text-red-500 text-sm font-medium">Error</span>`; bmiCategory.innerText = "Error"; bmiCategory.className = "text-red-500 font-medium text-sm"; return; } const data = await response.json(); console.log("[LIFF] Data received:", data); stepsData.innerText = data.totalSteps !== undefined ? data.totalSteps.toLocaleString() : "-"; const goalPercent = data.totalSteps !== undefined ? Math.min(Math.round((data.totalSteps / 10000) * 100), 100) : 0; stepsGoalPercent.innerText = `${goalPercent}%`; stepsProgressBar.style.width = `${goalPercent}%`; hrData.innerText = data.avgHeartRate !== undefined ? `${data.avgHeartRate} BPM` : "- BPM"; const hrStat = getHRStatus(data.avgHeartRate || 0); hrStatus.innerHTML = `<div class="w-2 h-2 ${hrStat.color} rounded-full ${data.avgHeartRate > 0 ? 'animate-pulse' : ''}"></div><span class="${hrStat.textColor} text-sm font-medium">${hrStat.text}</span>`; bmiData.innerText = data.bmi !== undefined ? data.bmi.toFixed(1) : "-"; const bmiCat = getBMICategory(data.bmi || 0); bmiCategory.innerText = bmiCat.text; bmiCategory.className = `${bmiCat.color} font-medium text-sm`; lastSync.innerText = `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`; updateConnectButton(true); } catch (err) { console.error("[LIFF] Fetch Health Data Error (Catch Block):", err); stepsData.innerText = "-"; hrData.innerText = "- BPM"; bmiData.innerText = "-"; updateConnectButton(false, `Fetch Error`); connectSubtext.innerText = `Error: ${err.message}`; connectSubtext.className = "text-xs text-red-500 mt-2 text-center"; hrStatus.innerHTML = `<div class="w-2 h-2 bg-red-400 rounded-full"></div><span class="text-red-500 text-sm font-medium">Error</span>`; bmiCategory.innerText = "Error"; bmiCategory.className = "text-red-500 font-medium text-sm"; }
-        }
+        // (Copied - No changes needed)
+        async function fetchHealthData(lineUserId) { stepsData.innerText = "Loading..."; hrData.innerText = "... BPM"; bmiData.innerText = "..."; lastSync.innerText = ""; stepsGoalPercent.innerText = "--%"; stepsProgressBar.style.width = "0%"; bmiCategory.innerText = "--"; bmiCategory.className = "text-gray-500 font-medium text-sm"; hrStatus.innerHTML = `<div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div><span class="text-gray-500 text-sm font-medium">Loading...</span>`; try { console.log(`[LIFF] Fetching data for ${lineUserId}`); const response = await fetch(`${SERVER_URL}/api/get-dashboard-data?line_user_id=${lineUserId}`, { method: 'GET', headers: { 'ngrok-skip-browser-warning': 'true' } }); console.log(`[LIFF] Fetch response status: ${response.status}`); if (!response.ok) { const errorText = await response.text(); let errorData; try { errorData = JSON.parse(errorText); } catch (e) { console.error("[LIFF] Failed to parse error response as JSON:", errorText); errorData = { error: `Server error ${response.status}: ${errorText.substring(0, 100)}` }; } console.error("[LIFF] Fetch error:", errorData); updateConnectButton(false, response.status === 401 || response.status === 403 ? (errorData.error || "Please reconnect Google Fit") : `Server Error ${response.status}`); stepsData.innerText = "-"; hrData.innerText = "- BPM"; bmiData.innerText = "-"; hrStatus.innerHTML = `<div class="w-2 h-2 bg-red-400 rounded-full"></div><span class="text-red-500 text-sm font-medium">Error</span>`; bmiCategory.innerText = "Error"; bmiCategory.className = "text-red-500 font-medium text-sm"; return; } const data = await response.json(); console.log("[LIFF] Data received:", data); stepsData.innerText = data.totalSteps !== undefined ? data.totalSteps.toLocaleString() : "-"; const goalPercent = data.totalSteps !== undefined ? Math.min(Math.round((data.totalSteps / 10000) * 100), 100) : 0; stepsGoalPercent.innerText = `${goalPercent}%`; stepsProgressBar.style.width = `${goalPercent}%`; hrData.innerText = data.avgHeartRate !== undefined ? `${data.avgHeartRate} BPM` : "- BPM"; const hrStat = getHRStatus(data.avgHeartRate || 0); hrStatus.innerHTML = `<div class="w-2 h-2 ${hrStat.color} rounded-full ${data.avgHeartRate > 0 ? 'animate-pulse' : ''}"></div><span class="${hrStat.textColor} text-sm font-medium">${hrStat.text}</span>`; bmiData.innerText = data.bmi !== undefined ? data.bmi.toFixed(1) : "-"; const bmiCat = getBMICategory(data.bmi || 0); bmiCategory.innerText = bmiCat.text; bmiCategory.className = `${bmiCat.color} font-medium text-sm`; lastSync.innerText = `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`; updateConnectButton(true); } catch (err) { console.error("[LIFF] Fetch Health Data Error (Catch Block):", err); stepsData.innerText = "-"; hrData.innerText = "- BPM"; bmiData.innerText = "-"; updateConnectButton(false, `Fetch Error`); connectSubtext.innerText = `Error: ${err.message}`; connectSubtext.className = "text-xs text-red-500 mt-2 text-center"; hrStatus.innerHTML = `<div class="w-2 h-2 bg-red-400 rounded-full"></div><span class="text-red-500 text-sm font-medium">Error</span>`; bmiCategory.innerText = "Error"; bmiCategory.className = "text-red-500 font-medium text-sm"; } }
 
-
-        // --- Meditation Timer & Audio Logic (UPDATED for Selectable Audio) ---
-
-        // Helper function to format time (MM:SS)
-        function formatTime(seconds) { /* ... (same as v7) ... */ }
-         function formatTime(seconds) { const mins = Math.floor(seconds / 60); const secs = seconds % 60; return `${mins}:${secs.toString().padStart(2, '0')}`; }
-
-        // Update Timer UI
-        function updateTimerUI() { /* ... (same as v7) ... */ }
-         function updateTimerUI() { meditationTimeLeft.innerText = formatTime(meditationTimeRemaining); const progress = ((meditationTimeTotal - meditationTimeRemaining) / meditationTimeTotal); const circumference = 2 * Math.PI * 88; meditationProgressCircle.style.strokeDashoffset = circumference * (1 - progress); if (meditationTimeRemaining <= 0) { meditationStatus.innerText = "Complete!"; } else { meditationStatus.innerText = meditationIsPlaying ? 'Meditating...' : 'Paused'; } }
-
-        // Start the meditation timer & Selected Audio
-        function startMeditationTimer() {
-             if (meditationIsPlaying || meditationTimeRemaining <= 0) return;
-             meditationIsPlaying = true;
-             meditationStatus.innerText = 'Meditating...';
-             durationButtons.forEach(btn => btn.disabled = true);
-             soundSelectButtons.forEach(btn => btn.disabled = true); // Disable sound select too
-             breathingGuide.classList.remove('hidden');
-
-             meditationPlayIcon.classList.add('hidden');
-             meditationPauseIcon.classList.remove('hidden');
-             meditationPlayText.innerText = 'Pause';
-
-             // Start the *selected* Audio
-             startAudio();
-
-             meditationTimerInterval = setInterval(() => {
-                meditationTimeRemaining--;
-                updateTimerUI();
-                if (meditationTimeRemaining <= 0) {
-                    stopMeditationTimer(true);
-                }
-            }, 1000);
-        }
-
-        // Stop or Pause the meditation timer & Audio
-        function stopMeditationTimer(isComplete = false) {
-             clearInterval(meditationTimerInterval);
-             meditationTimerInterval = null;
-             meditationIsPlaying = false;
-             meditationStatus.innerText = isComplete ? 'Complete!' : 'Paused';
-             breathingGuide.classList.add('hidden');
-
-             // Re-enable duration & sound buttons
-             durationButtons.forEach(btn => btn.disabled = false);
-             soundSelectButtons.forEach(btn => btn.disabled = false);
-
-             meditationPlayIcon.classList.remove('hidden');
-             meditationPauseIcon.classList.add('hidden');
-             meditationPlayText.innerText = 'Start';
-
-             // Stop Audio
-             stopAudio();
-
-             if (isComplete) {
-                if (navigator.vibrate) {
-                    console.log("[Vibrate] Timer finished, vibrating...");
-                    navigator.vibrate(200);
-                } else { console.log("[Vibrate] Vibration not supported."); }
-                alert('Meditation session complete! Great job! 🧘‍♂️');
-            }
-        }
-
-        // Reset the meditation timer & UI
-        function resetMeditationTimer() {
-             stopMeditationTimer(); // Stop timer and audio
-             meditationTimeRemaining = meditationTimeTotal;
-             updateTimerUI();
-             meditationStatus.innerText = 'Ready';
-             durationButtons.forEach(btn => btn.disabled = false);
-             soundSelectButtons.forEach(btn => btn.disabled = false); // Enable sound select on reset
-        }
-
-        // Select a new duration
-        function selectMeditationDuration(duration) { /* ... (same as v7) ... */ }
-         function selectMeditationDuration(duration) { if (meditationIsPlaying) return; meditationTimeTotal = duration; meditationTimeRemaining = duration; updateTimerUI(); durationButtons.forEach(btn => { if (parseInt(btn.dataset.duration) === duration) { btn.classList.add('control-button-active'); btn.classList.remove('control-button-inactive'); } else { btn.classList.remove('control-button-active'); btn.classList.add('control-button-inactive'); } }); console.log(`[Meditation] Duration set to ${duration / 60} minutes`); }
-
-        // ★★★ NEW: Select Sound Type ★★★
-        function selectSound(soundType) {
-             if (meditationIsPlaying) return; // Cannot change sound while playing
-             selectedSoundType = soundType;
-             // Update active button style
-             soundSelectButtons.forEach(btn => {
-                 if (btn.dataset.sound === soundType) {
-                     btn.classList.add('control-button-active');
-                     btn.classList.remove('control-button-inactive');
-                 } else {
-                     btn.classList.remove('control-button-active');
-                     btn.classList.add('control-button-inactive');
-                 }
-             });
-             // Set the current player for startAudio
-             currentAudioPlayer = audioPlayers[selectedSoundType];
-             console.log(`[Audio] Sound selected: ${soundType}`);
-        }
-
-         // Initialize Tone.js audio components (Creates BOTH sound types)
-        function initializeAudio() {
-            // Only initialize once
-            if (Object.keys(audioPlayers).length > 0) return;
-
-             console.log("[Audio] Initializing Tone.js Synths...");
-             try {
-                 // --- Sound 1: Calm Pad (using AMSynth) ---
-                 const padSynth = new Tone.AMSynth({
-                     harmonicity: 1.5,
-                     detune: 0,
-                     oscillator: { type: "sine" },
-                     envelope: { attack: 2, decay: 1, sustain: 0.8, release: 4 },
-                     modulation: { type: "square" },
-                     modulationEnvelope: { attack: 0.5, decay: 0.01, sustain: 1, release: 0.5 }
-                 }).toDestination();
-                 padSynth.volume.value = -18; // Low volume
-
-                 // Simple sequence for the pad
-                 const padSequence = new Tone.Sequence((time, note) => {
-                     padSynth.triggerAttackRelease(note, "2n", time);
-                 }, ["C3", ["E3", "G3"], "C3", "G2"], "1n"); // Slow sequence
-                 padSequence.loop = true;
-
-                 audioPlayers['pad'] = padSequence; // Store the sequence
-                 console.log("[Audio] Pad Synth created.");
-
-                 // --- Sound 2: Gentle Plucks (using PluckSynth) ---
-                 const pluckSynth = new Tone.PluckSynth({
-                     attackNoise: 0.5,
-                     dampening: 4000,
-                     resonance: 0.8
-                 }).toDestination();
-                 const reverb = new Tone.Reverb(3).toDestination(); // Add a bit of reverb
-                 pluckSynth.connect(reverb);
-                 pluckSynth.volume.value = -12; // Slightly louder than pad
-
-                 // Simple sequence for plucks
-                 const pluckSequence = new Tone.Sequence((time, note) => {
-                     pluckSynth.triggerAttack(note, time);
-                 }, ["E4", null, "G4", null, "B4", null, "G4", null], "2n"); // Sparse sequence
-                 pluckSequence.loop = true;
-
-                 audioPlayers['pluck'] = pluckSequence; // Store the sequence
-                 console.log("[Audio] Pluck Synth created.");
-
-                 // Set default player
-                 currentAudioPlayer = audioPlayers[selectedSoundType];
-
-                 updateMuteButtonUI();
-
-             } catch (e) {
-                  console.error("[Audio] Error creating Tone.js components:", e);
-                  // Disable audio controls if init fails
-                  btnAudioToggleMute.disabled = true;
-                  soundSelectButtons.forEach(btn => btn.disabled = true);
-             }
-        }
-
-        // Start selected audio playback
-        function startAudio() {
-             if (!currentAudioPlayer) initializeAudio(); // Ensure players exist
-             if (!audioIsPlaying && isAudioContextStarted && currentAudioPlayer) {
-                 console.log(`[Audio] Starting playback for: ${selectedSoundType}`);
-                 Tone.Transport.start(); // Start the transport
-                 currentAudioPlayer.start(0); // Start the selected sequence immediately
-                 audioIsPlaying = true;
-             } else if (!isAudioContextStarted) {
-                 console.warn("[Audio] Cannot start audio - AudioContext not started by user yet.");
-             } else if (!currentAudioPlayer) {
-                 console.error("[Audio] Cannot start audio - No player selected/initialized.");
-             }
-        }
-
-        // Stop audio playback
-        function stopAudio() {
-             if (audioIsPlaying && currentAudioPlayer) {
-                 console.log(`[Audio] Stopping playback for: ${selectedSoundType}`);
-                 currentAudioPlayer.stop(); // Stop the current sequence
-                 Tone.Transport.stop(); // Stop the transport
-                 // If using Synths directly, you might need triggerRelease
-                 // if (audioPlayers['pad'] instanceof Tone.AMSynth) audioPlayers['pad'].triggerRelease();
-                 // if (audioPlayers['pluck'] instanceof Tone.PluckSynth) { /* Pluck releases automatically */ }
-                 audioIsPlaying = false;
-             }
-        }
-
-        // Toggle audio mute/unmute
-        function toggleAudioMute() {
-            if (!isAudioContextStarted) {
-                console.warn("[Audio] Cannot toggle mute - AudioContext not started.");
-                return;
-            }
-             if (Object.keys(audioPlayers).length === 0) initializeAudio(); // Ensure context for Destination
-             audioIsMuted = !audioIsMuted;
-             Tone.Destination.mute = audioIsMuted;
-             updateMuteButtonUI();
-             console.log(`[Audio] Mute toggled: ${audioIsMuted}`);
-        }
-
-         // Update UI for Audio Mute/Unmute button
-        function updateMuteButtonUI() { /* ... (same as v7) ... */ }
-         function updateMuteButtonUI() { if (audioIsMuted) { audioMuteIcon.classList.remove('hidden'); audioUnmuteIcon.classList.add('hidden'); } else { audioMuteIcon.classList.add('hidden'); audioUnmuteIcon.classList.remove('hidden'); } }
-
+        // --- Meditation Timer & Audio Logic ---
+        // (Copied - No changes needed)
+        function formatTime(seconds) { const mins = Math.floor(seconds / 60); const secs = seconds % 60; return `${mins}:${secs.toString().padStart(2, '0')}`; }
+        function updateTimerUI() { meditationTimeLeft.innerText = formatTime(meditationTimeRemaining); const progress = ((meditationTimeTotal - meditationTimeRemaining) / meditationTimeTotal); const circumference = 2 * Math.PI * 88; meditationProgressCircle.style.strokeDashoffset = circumference * (1 - progress); if (meditationTimeRemaining <= 0) { meditationStatus.innerText = "Complete!"; } else { meditationStatus.innerText = meditationIsPlaying ? 'Meditating...' : 'Paused'; } }
+        function startMeditationTimer() { if (meditationIsPlaying || meditationTimeRemaining <= 0) return; meditationIsPlaying = true; meditationStatus.innerText = 'Meditating...'; durationButtons.forEach(btn => btn.disabled = true); soundSelectButtons.forEach(btn => btn.disabled = true); breathingGuide.classList.remove('hidden'); meditationPlayIcon.classList.add('hidden'); meditationPauseIcon.classList.remove('hidden'); meditationPlayText.innerText = 'Pause'; startAudio(); meditationTimerInterval = setInterval(() => { meditationTimeRemaining--; updateTimerUI(); if (meditationTimeRemaining <= 0) { stopMeditationTimer(true); } }, 1000); }
+        function stopMeditationTimer(isComplete = false) { clearInterval(meditationTimerInterval); meditationTimerInterval = null; meditationIsPlaying = false; meditationStatus.innerText = isComplete ? 'Complete!' : 'Paused'; breathingGuide.classList.add('hidden'); durationButtons.forEach(btn => btn.disabled = false); soundSelectButtons.forEach(btn => btn.disabled = false); meditationPlayIcon.classList.remove('hidden'); meditationPauseIcon.classList.add('hidden'); meditationPlayText.innerText = 'Start'; stopAudio(); if (isComplete) { if (navigator.vibrate) { console.log("[Vibrate] Timer finished, vibrating..."); navigator.vibrate(200); } else { console.log("[Vibrate] Vibration not supported."); } alert('Meditation session complete! Great job! 🧘‍♂️'); } }
+        function resetMeditationTimer() { stopMeditationTimer(); meditationTimeRemaining = meditationTimeTotal; updateTimerUI(); meditationStatus.innerText = 'Ready'; durationButtons.forEach(btn => btn.disabled = false); soundSelectButtons.forEach(btn => btn.disabled = false); }
+        function selectMeditationDuration(duration) { if (meditationIsPlaying) return; meditationTimeTotal = duration; meditationTimeRemaining = duration; updateTimerUI(); durationButtons.forEach(btn => { if (parseInt(btn.dataset.duration) === duration) { btn.classList.add('control-button-active'); btn.classList.remove('control-button-inactive'); } else { btn.classList.remove('control-button-active'); btn.classList.add('control-button-inactive'); } }); console.log(`[Meditation] Duration set to ${duration / 60} minutes`); }
+        function selectSound(soundType) { if (meditationIsPlaying) return; selectedSoundType = soundType; soundSelectButtons.forEach(btn => { if (btn.dataset.sound === soundType) { btn.classList.add('control-button-active'); btn.classList.remove('control-button-inactive'); } else { btn.classList.remove('control-button-active'); btn.classList.add('control-button-inactive'); } }); currentAudioPlayer = audioPlayers[selectedSoundType]; console.log(`[Audio] Sound selected: ${soundType}`); }
+        function initializeAudio() { if (Object.keys(audioPlayers).length > 0) return; console.log("[Audio] Initializing Tone.js Synths..."); try { const padSynth = new Tone.AMSynth({ harmonicity: 1.5, oscillator: { type: "sine" }, envelope: { attack: 2, decay: 1, sustain: 0.8, release: 4 }, modulation: { type: "square" }, modulationEnvelope: { attack: 0.5, decay: 0.01, sustain: 1, release: 0.5 } }).toDestination(); padSynth.volume.value = -18; const padSequence = new Tone.Sequence((time, note) => { padSynth.triggerAttackRelease(note, "2n", time); }, ["C3", ["E3", "G3"], "C3", "G2"], "1n"); padSequence.loop = true; audioPlayers['pad'] = padSequence; console.log("[Audio] Pad Synth created."); const pluckSynth = new Tone.PluckSynth({ attackNoise: 0.5, dampening: 4000, resonance: 0.8 }).toDestination(); const reverb = new Tone.Reverb(3).toDestination(); pluckSynth.connect(reverb); pluckSynth.volume.value = -12; const pluckSequence = new Tone.Sequence((time, note) => { pluckSynth.triggerAttack(note, time); }, ["E4", null, "G4", null, "B4", null, "G4", null], "2n"); pluckSequence.loop = true; audioPlayers['pluck'] = pluckSequence; console.log("[Audio] Pluck Synth created."); currentAudioPlayer = audioPlayers[selectedSoundType]; updateMuteButtonUI(); } catch (e) { console.error("[Audio] Error creating Tone.js components:", e); btnAudioToggleMute.disabled = true; soundSelectButtons.forEach(btn => btn.disabled = true); } }
+        function startAudio() { if (!currentAudioPlayer) initializeAudio(); if (!audioIsPlaying && isAudioContextStarted && currentAudioPlayer) { console.log(`[Audio] Starting playback for: ${selectedSoundType}`); Tone.Transport.start(); currentAudioPlayer.start(0); audioIsPlaying = true; } else if (!isAudioContextStarted) { console.warn("[Audio] Cannot start audio - AudioContext not started by user yet."); } else if (!currentAudioPlayer) { console.error("[Audio] Cannot start audio - No player selected/initialized."); } }
+        function stopAudio() { if (audioIsPlaying && currentAudioPlayer) { console.log(`[Audio] Stopping playback for: ${selectedSoundType}`); currentAudioPlayer.stop(); Tone.Transport.stop(); audioIsPlaying = false; } }
+        function toggleAudioMute() { if (!isAudioContextStarted) { console.warn("[Audio] Cannot toggle mute - AudioContext not started."); return; } if (Object.keys(audioPlayers).length === 0) initializeAudio(); audioIsMuted = !audioIsMuted; Tone.Destination.mute = audioIsMuted; updateMuteButtonUI(); console.log(`[Audio] Mute toggled: ${audioIsMuted}`); }
+        function updateMuteButtonUI() { if (audioIsMuted) { audioMuteIcon.classList.remove('hidden'); audioUnmuteIcon.classList.add('hidden'); } else { audioMuteIcon.classList.add('hidden'); audioUnmuteIcon.classList.remove('hidden'); } }
 
         // --- LIFF Initialization ---
-        async function initializeLiff() { /* ... (same as before) ... */ }
-         async function initializeLiff() {
-            showLoading();
-            console.log("[LIFF] Initializing...");
-            try {
-                await liff.init({ liffId: LIFF_ID });
-                console.log("[LIFF] Init success!");
-
-                if (!liff.isLoggedIn()) {
-                    console.log("[LIFF] Not logged in, showing login button.");
-                    showLogin();
-                } else {
-                    console.log("[LIFF] Logged in, showing app.");
-                    showApp();
-                    const profile = await liff.getProfile();
-                    console.log("[LIFF] Profile fetched:", profile);
-                    userPicture.src = profile.pictureUrl;
-                    userPicture.onerror = () => { userPicture.src='https://placehold.co/80x80/E5E7EB/A1A1AA?text=Err'; console.warn("[LIFF] Failed to load profile picture."); };
-                    displayName.innerText = profile.displayName;
-                    userId.innerText = profile.userId;
-                    greetingMessage.innerText = generateGreeting(profile.displayName);
-
-                    console.log("[LIFF] Checking URL params...");
-                    const processedRedirect = checkUrlParams();
-                    if (!processedRedirect) {
-                        console.log("[LIFF] Not a redirect, fetching health data...");
-                        await fetchHealthData(profile.userId);
-                    } else {
-                        console.log("[LIFF] Processed redirect, data fetch triggered by checkUrlParams.");
-                    }
-                }
-            } catch (e) {
-                console.error("[LIFF] Init Error:", e);
-                loadingState.innerHTML = `<p class="text-lg text-red-500">LIFF Initialization Failed: ${e.message}</p>`;
-                showLoading();
-            }
-        }
-
+        // (Copied - No changes needed)
+        async function initializeLiff() { showLoading(); console.log("[LIFF] Initializing..."); try { await liff.init({ liffId: LIFF_ID }); console.log("[LIFF] Init success!"); if (!liff.isLoggedIn()) { console.log("[LIFF] Not logged in, showing login button."); showLogin(); } else { console.log("[LIFF] Logged in, showing app."); showApp(); const profile = await liff.getProfile(); console.log("[LIFF] Profile fetched:", profile); userPicture.src = profile.pictureUrl; userPicture.onerror = () => { userPicture.src='https://placehold.co/80x80/E5E7EB/A1A1AA?text=Err'; console.warn("[LIFF] Failed to load profile picture."); }; displayName.innerText = profile.displayName; userId.innerText = profile.userId; greetingMessage.innerText = generateGreeting(profile.displayName); console.log("[LIFF] Checking URL params..."); const processedRedirect = checkUrlParams(); if (!processedRedirect) { console.log("[LIFF] Not a redirect, fetching health data..."); await fetchHealthData(profile.userId); } else { console.log("[LIFF] Processed redirect, data fetch triggered by checkUrlParams."); } } } catch (e) { console.error("[LIFF] Init Error:", e); loadingState.innerHTML = `<p class="text-lg text-red-500">LIFF Initialization Failed: ${e.message}</p>`; showLoading(); } }
 
         // --- Check URL Params ---
-        function checkUrlParams() { /* ... (same as before) ... */ }
-        function checkUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            let processedParams = false;
-            if (params.has('connect') && params.get('connect') === 'success') {
-                console.log("[LIFF] Connect success param found.");
-                updateConnectButton(true, "เชื่อมต่อสำเร็จ! กำลังดึงข้อมูล...");
-                processedParams = true;
-                liff.getProfile().then(profile => {
-                    console.log("[LIFF] Fetching data after successful connect...");
-                    fetchHealthData(profile.userId);
-                });
-            } else if (params.has('error')) {
-                const errorMsg = params.get('error');
-                console.log(`[LIFF] Connect error param found: ${errorMsg}`);
-                updateConnectButton(false, `Connection failed: ${errorMsg}`);
-                processedParams = true;
-            }
-
-            if (processedParams) {
-                 console.log("[LIFF] Clearing URL params.");
-                 window.history.replaceState({}, document.title, window.location.pathname);
-            }
-            return processedParams;
-        }
-
+        // (Copied - No changes needed)
+        function checkUrlParams() { const params = new URLSearchParams(window.location.search); let processedParams = false; if (params.has('connect') && params.get('connect') === 'success') { console.log("[LIFF] Connect success param found."); updateConnectButton(true, "เชื่อมต่อสำเร็จ! กำลังดึงข้อมูล..."); processedParams = true; liff.getProfile().then(profile => { console.log("[LIFF] Fetching data after successful connect..."); fetchHealthData(profile.userId); }); } else if (params.has('error')) { const errorMsg = params.get('error'); console.log(`[LIFF] Connect error param found: ${errorMsg}`); updateConnectButton(false, `Connection failed: ${errorMsg}`); processedParams = true; } if (processedParams) { console.log("[LIFF] Clearing URL params."); window.history.replaceState({}, document.title, window.location.pathname); } return processedParams; }
 
         // --- Event Listeners ---
-        btnLogin.addEventListener("click", () => { /* ... */ });
-        btnLogout.addEventListener("click", () => { /* ... */ });
-        btnConnectHealth.addEventListener("click", async () => { /* ... */ });
-        btnMedication.addEventListener("click", () => openModal('medicationModal'));
-        // --- (Copied from v7) ---
-         btnLogin.addEventListener("click", () => { console.log("[LIFF] Login button clicked."); liff.login({ redirectUri: window.location.href }); });
-         btnLogout.addEventListener("click", () => { if (liff.isLoggedIn()) { console.log("[LIFF] Logout button clicked."); if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) { console.log("[LIFF] Logging out..."); liff.logout(); window.location.reload(); } else { console.log("[LIFF] Logout cancelled."); } } });
-         btnConnectHealth.addEventListener("click", async () => { if (btnConnectHealth.disabled) return; console.log("[LIFF] Connect Health button clicked."); btnConnectHealth.disabled = true; connectText.innerText = "Connecting..."; connectPulse.classList.add('hidden'); try { const profile = await liff.getProfile(); const lineUserId = profile.userId; const authUrl = `${SERVER_URL}/auth/google/start?line_user_id=${lineUserId}`; console.log(`[LIFF] Starting auth flow for ${lineUserId} at ${authUrl}`); if (liff.isInClient()) { console.log("[LIFF] Opening external window for auth."); alert("ระบบจะเปิดเบราว์เซอร์ภายนอกเพื่อให้คุณล็อกอิน Google..."); liff.openWindow({ url: authUrl, external: true }); } else { console.log("[LIFF] Redirecting in current window for auth."); window.location.href = authUrl; } } catch (err) { console.error("[LIFF] Error starting auth flow:", err); alert("เกิดข้อผิดพลาดในการเชื่อมต่อ: " + err.message); updateConnectButton(false, "Connection Error"); } });
-         btnMedication.addEventListener("click", () => { console.log("[LIFF] Medication button clicked."); openModal('medicationModal'); });
-         // --- End Copied Listeners ---
-
-
-        // UPDATED: btnMeditation Listener (Handles AudioContext Start)
-        btnMeditation.addEventListener("click", async () => {
-            console.log("[LIFF] Meditation button clicked.");
-            // Start AudioContext on first interaction
-            if (!isAudioContextStarted && Tone.context.state !== 'running') {
-                try {
-                    await Tone.start();
-                    console.log('[Audio] AudioContext started by button click.');
-                    isAudioContextStarted = true;
-                    initializeAudio(); // Initialize synths *after* context starts
-                } catch (e) {
-                    console.error("[Audio] Failed to start AudioContext:", e);
-                    alert("Could not start audio.");
-                    return;
-                }
-            }
-            // Set default selections on open
-            selectSound(selectedSoundType);
-            selectMeditationDuration(meditationTimeTotal);
-            openModal('meditationModal');
-        });
-
-        // Meditation Timer Listeners
-        btnMeditationTogglePlay.addEventListener('click', () => {
-             if (meditationIsPlaying) {
-                 stopMeditationTimer();
-             } else {
-                 // Ensure audio context is running
-                 if (!isAudioContextStarted) {
-                      Tone.start().then(() => {
-                          console.log('[Audio] AudioContext started by Play button.');
-                          isAudioContextStarted = true;
-                          initializeAudio(); // Ensure players are ready
-                          startMeditationTimer();
-                      }).catch(e => console.error("[Audio] Failed to start AudioContext on Play:", e));
-                 } else {
-                     startMeditationTimer(); // Context already running
-                 }
-             }
-         });
-        btnMeditationReset.addEventListener('click', resetMeditationTimer);
-        durationButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const duration = parseInt(button.dataset.duration);
-                selectMeditationDuration(duration);
-            });
-        });
-
-        // ★★★ NEW: Sound Selection Listeners ★★★
-        soundSelectButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const soundType = button.dataset.sound;
-                selectSound(soundType);
-            });
-        });
-
-        // Audio Control Listener
-        btnAudioToggleMute.addEventListener('click', toggleAudioMute);
-
+        // (Copied - No changes needed)
+        btnLogin.addEventListener("click", () => { console.log("[LIFF] Login button clicked."); liff.login({ redirectUri: window.location.href }); }); btnLogout.addEventListener("click", () => { if (liff.isLoggedIn()) { console.log("[LIFF] Logout button clicked."); if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) { console.log("[LIFF] Logging out..."); liff.logout(); window.location.reload(); } else { console.log("[LIFF] Logout cancelled."); } } }); btnConnectHealth.addEventListener("click", async () => { if (btnConnectHealth.disabled) return; console.log("[LIFF] Connect Health button clicked."); btnConnectHealth.disabled = true; connectText.innerText = "Connecting..."; connectPulse.classList.add('hidden'); try { const profile = await liff.getProfile(); const lineUserId = profile.userId; const authUrl = `${SERVER_URL}/auth/google/start?line_user_id=${lineUserId}`; console.log(`[LIFF] Starting auth flow for ${lineUserId} at ${authUrl}`); if (liff.isInClient()) { console.log("[LIFF] Opening external window for auth."); alert("ระบบจะเปิดเบราว์เซอร์ภายนอกเพื่อให้คุณล็อกอิน Google..."); liff.openWindow({ url: authUrl, external: true }); } else { console.log("[LIFF] Redirecting in current window for auth."); window.location.href = authUrl; } } catch (err) { console.error("[LIFF] Error starting auth flow:", err); alert("เกิดข้อผิดพลาดในการเชื่อมต่อ: " + err.message); updateConnectButton(false, "Connection Error"); } }); btnMedication.addEventListener("click", () => { console.log("[LIFF] Medication button clicked."); openModal('medicationModal'); }); btnMeditation.addEventListener("click", async () => { console.log("[LIFF] Meditation button clicked."); if (!isAudioContextStarted && Tone.context.state !== 'running') { try { await Tone.start(); console.log('[Audio] AudioContext started by button click.'); isAudioContextStarted = true; initializeAudio(); } catch (e) { console.error("[Audio] Failed to start AudioContext:", e); alert("Could not start audio."); return; } } selectSound(selectedSoundType); selectMeditationDuration(meditationTimeTotal); openModal('meditationModal'); }); btnMeditationTogglePlay.addEventListener('click', () => { if (meditationIsPlaying) { stopMeditationTimer(); } else { if (!isAudioContextStarted) { Tone.start().then(() => { console.log('[Audio] AudioContext started by Play button.'); isAudioContextStarted = true; initializeAudio(); startMeditationTimer(); }).catch(e => console.error("[Audio] Failed to start AudioContext on Play:", e)); } else { startMeditationTimer(); } } }); btnMeditationReset.addEventListener('click', resetMeditationTimer); durationButtons.forEach(button => { button.addEventListener('click', () => { const duration = parseInt(button.dataset.duration); selectMeditationDuration(duration); }); }); soundSelectButtons.forEach(button => { button.addEventListener('click', () => { const soundType = button.dataset.sound; selectSound(soundType); }); }); btnAudioToggleMute.addEventListener('click', toggleAudioMute);
 
         // --- Run ---
         document.addEventListener("DOMContentLoaded", initializeLiff);
@@ -854,5 +336,4 @@
     </script>
 </body>
 </html>
-
 
