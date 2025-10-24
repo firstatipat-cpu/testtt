@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- LIFF SDK -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <!-- ★★★ NEW: Tone.js for Audio ★★★ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,6 +40,12 @@
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+        /* Style for active duration button */
+        .duration-button-active {
+            background-color: #4F46E5 !important; /* indigo-600 */
+            color: white !important;
+            border-color: transparent !important;
         }
     </style>
 </head>
@@ -216,20 +224,87 @@
             <button onclick="closeModal('medicationModal')" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium transition duration-200">Close</button>
         </div>
     </div>
-    <!-- Meditation Modal -->
+
+    <!-- ★★★ Meditation Modal (UPDATED with Timer & Audio) ★★★ -->
     <div id="meditationModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none">
          <div class="modal-content bg-white rounded-lg p-6 max-w-sm w-full shadow-xl transition-transform duration-200">
+            <!-- Header -->
             <div class="flex items-center gap-2 mb-4">
                  <svg class="w-5 h-5 text-indigo-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 <h2 class="text-lg font-semibold text-gray-900">Meditation Session</h2>
             </div>
-            <p class="text-gray-600 mb-6 text-sm">ใช้เวลาผ่อนคลายและฝึกสมาธิ (ฟีเจอร์นี้ยังไม่พร้อมใช้งานในเวอร์ชันนี้)</p>
-            <button onclick="closeModal('meditationModal')" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium transition duration-200">Close</button>
+            <p class="text-gray-600 mb-6 text-sm">ใช้เวลาผ่อนคลายและฝึกสมาธิ</p>
+
+            <!-- Timer Display (like React component) -->
+            <div class="relative mb-6">
+                <div class="w-48 h-48 mx-auto relative">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle cx="96" cy="96" r="88" stroke="#e5e7eb" stroke-width="8" fill="none" />
+                        <circle id="meditationProgressCircle" cx="96" cy="96" r="88" stroke="url(#gradient)" stroke-width="8" fill="none" stroke-dasharray="553" stroke-dashoffset="553" <!-- Approx 2*PI*88 -->
+                                stroke-linecap="round" class="transition-all duration-1000" />
+                        <defs>
+                            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#6366f1" /> {/* indigo-500 */}
+                                <stop offset="100%" stop-color="#a855f7" /> {/* purple-500 */}
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center flex-col">
+                        <span id="meditationTimeLeft" class="text-3xl font-semibold text-gray-900">5:00</span>
+                        <span id="meditationStatus" class="text-gray-500 text-sm mt-1">Ready</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Duration Selection -->
+            <div class="space-y-2 mb-6">
+                <label class="text-sm font-medium text-gray-700">Duration</label>
+                <div class="grid grid-cols-4 gap-2">
+                    <button data-duration="180" class="meditation-duration-btn border border-gray-300 text-gray-700 py-1 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50">3m</button>
+                    <button data-duration="300" class="meditation-duration-btn border border-gray-300 text-gray-700 py-1 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50 duration-button-active">5m</button>
+                    <button data-duration="600" class="meditation-duration-btn border border-gray-300 text-gray-700 py-1 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50">10m</button>
+                    <button data-duration="900" class="meditation-duration-btn border border-gray-300 text-gray-700 py-1 rounded-md text-sm hover:bg-gray-100 disabled:opacity-50">15m</button>
+                </div>
+            </div>
+
+            <!-- Timer Controls -->
+            <div class="flex gap-3 mb-6">
+                <button id="btnMeditationTogglePlay" class="flex-1 bg-gradient-indigo-purple hover:bg-gradient-indigo-purple-dark text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition duration-200">
+                    <svg id="meditationPlayIcon" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>
+                    <svg id="meditationPauseIcon" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" /></svg>
+                    <span id="meditationPlayText">Start</span>
+                </button>
+                <button id="btnMeditationReset" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition duration-200">
+                     <!-- RotateCcw Icon -->
+                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9M3.22 13.582A8.001 8.001 0 0019.418 15M20 20v-5h-.581"></path></svg>
+                </button>
+            </div>
+
+            <!-- ★★★ NEW: Audio Controls ★★★ -->
+            <div class="flex items-center justify-between border-t pt-4 mt-4">
+                 <span class="text-sm text-gray-600">Ambient Sound</span>
+                 <div class="flex items-center gap-2">
+                     <button id="btnAudioTogglePlay" class="p-1 text-gray-500 hover:text-gray-700 disabled:opacity-50" title="Play/Pause Sound" disabled>
+                         <svg id="audioPlayIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm.73-10.91a.75.75 0 00-1.46 0v3.82a.75.75 0 001.46 0v-3.82zM9.25 14a.75.75 0 100-1.5.75.75 0 000 1.5z"/></svg> <!-- Placeholder Play Icon -->
+                         <svg id="audioPauseIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 011-1h1a1 1 0 110 2H8a1 1 0 01-1-1zm5 0a1 1 0 011-1h1a1 1 0 110 2h-1a1 1 0 01-1-1z"/></svg> <!-- Placeholder Pause Icon -->
+                     </button>
+                     <button id="btnAudioToggleMute" class="p-1 text-gray-500 hover:text-gray-700" title="Mute/Unmute">
+                         <svg id="audioMuteIcon" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/></svg> <!-- Mute Icon -->
+                         <svg id="audioUnmuteIcon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v6a1 1 0 102 0V7zM7 9a1 1 0 000 2h1a1 1 0 100-2H7zm8 0a1 1 0 10-2 0v6a1 1 0 102 0V9z"/></svg> <!-- Volume Icon -->
+                     </button>
+                 </div>
+            </div>
+            <!-- ★★★ END NEW AUDIO ★★★ -->
+
+
+            <!-- Close Button -->
+            <button onclick="closeModal('meditationModal')" class="mt-6 w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium transition duration-200">Close</button>
         </div>
     </div>
+    <!-- END Meditation Modal -->
 
 
-    <!-- JavaScript Logic (Includes AI Greeting) -->
+    <!-- JavaScript Logic (Includes AI Greeting and Meditation Audio) -->
     <script>
         // --- DOM Elements ---
         const loadingState = document.getElementById("loadingState");
@@ -241,7 +316,7 @@
         const userPicture = document.getElementById("userPicture");
         const displayName = document.getElementById("displayName");
         const userId = document.getElementById("userId");
-        const greetingMessage = document.getElementById("greetingMessage"); // ★★★ NEW ★★★
+        const greetingMessage = document.getElementById("greetingMessage");
         const connectText = document.getElementById("connectText");
         const connectSubtext = document.getElementById("connectSubtext");
         const connectPulse = document.getElementById("connectPulse");
@@ -256,13 +331,49 @@
         const btnMedication = document.getElementById("btnMedication");
         const btnMeditation = document.getElementById("btnMeditation");
         const medicationModal = document.getElementById("medicationModal");
+        // Meditation Modal Elements
         const meditationModal = document.getElementById("meditationModal");
+        const meditationTimeLeft = document.getElementById("meditationTimeLeft");
+        const meditationStatus = document.getElementById("meditationStatus");
+        const meditationProgressCircle = document.getElementById("meditationProgressCircle");
+        const durationButtons = document.querySelectorAll(".meditation-duration-btn");
+        const btnMeditationTogglePlay = document.getElementById("btnMeditationTogglePlay");
+        const meditationPlayIcon = document.getElementById("meditationPlayIcon");
+        const meditationPauseIcon = document.getElementById("meditationPauseIcon");
+        const meditationPlayText = document.getElementById("meditationPlayText");
+        const btnMeditationReset = document.getElementById("btnMeditationReset");
+        // Audio Elements
+        const btnAudioTogglePlay = document.getElementById("btnAudioTogglePlay");
+        const audioPlayIcon = document.getElementById("audioPlayIcon");
+        const audioPauseIcon = document.getElementById("audioPauseIcon");
+        const btnAudioToggleMute = document.getElementById("btnAudioToggleMute");
+        const audioMuteIcon = document.getElementById("audioMuteIcon");
+        const audioUnmuteIcon = document.getElementById("audioUnmuteIcon");
+
 
         // --- Configuration ---
         const LIFF_ID = "2008337931-z1xeJb7D"; // 🔸 MUST BE YOUR LIFF ID
         const SERVER_URL = "https://sequential-seborrheal-clelia.ngrok-free.dev"; // 🔗 MUST BE YOUR NGROK URL
 
+        // --- Meditation State ---
+        let meditationTimerInterval = null;
+        let meditationIsPlaying = false;
+        let meditationTimeTotal = 300; // Default 5 minutes
+        let meditationTimeRemaining = 300;
+
+        // --- ★★★ NEW: Tone.js Audio State ★★★ ---
+        let audioSynth = null; // To hold the Tone.js synth
+        let audioIsPlaying = false; // Separate state for audio playback
+        let audioIsMuted = false;   // Separate state for audio mute
+        let isAudioContextStarted = false; // Flag to ensure AudioContext starts
+
         // --- UI Functions ---
+        function showLoading() { /* ... (same as before) ... */ }
+        function showLogin() { /* ... (same as before) ... */ }
+        function showApp() { /* ... (same as before) ... */ }
+        function updateConnectButton(connected, message = null) { /* ... (same as before) ... */ }
+        function getBMICategory(bmi) { /* ... (same as before) ... */ }
+        function getHRStatus(hr) { /* ... (same as before) ... */ }
         function showLoading() {
             loadingState.style.display = "flex";
             loginState.style.display = "none";
@@ -313,29 +424,45 @@
             return { text: "Elevated", color: "bg-red-500", textColor: "text-red-600" };
         }
 
-        // --- Modal Functions ---
+
+        // --- ★★★ UPDATED: Modal Functions (Handles Audio) ★★★ ---
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
                 modal.classList.add('is-open');
-                // Force reflow for transition
                 void modal.offsetWidth;
                 modal.classList.add('opacity-100', 'pointer-events-auto');
                 modal.querySelector('.modal-content').classList.add('scale-100');
                 modal.querySelector('.modal-content').classList.remove('scale-95');
+
+                // If opening Meditation modal, initialize and potentially start audio
+                if (modalId === 'meditationModal') {
+                    resetMeditationTimer(); // Reset timer UI
+                    initializeAudio(); // Prepare audio synth
+                    // Optionally auto-play sound, or wait for user click
+                     // toggleAudioPlay(); // Uncomment to auto-play
+                    btnAudioTogglePlay.disabled = false; // Enable audio play button
+                }
             }
         }
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('is-closing'); // Add closing state
+            if (modal && modal.classList.contains('is-open')) { // Check if it's actually open
+                modal.classList.add('is-closing');
                 modal.classList.remove('opacity-100', 'pointer-events-auto');
                 modal.querySelector('.modal-content').classList.remove('scale-100');
                 modal.querySelector('.modal-content').classList.add('scale-95');
-                // Wait for animation before hiding completely
+
+                 // If closing Meditation modal, stop timer and audio
+                if (modalId === 'meditationModal') {
+                    stopMeditationTimer();
+                    stopAudio(); // Stop audio playback
+                    btnAudioTogglePlay.disabled = true; // Disable button when modal closed
+                }
+
                 setTimeout(() => {
                     modal.classList.remove('is-open', 'is-closing');
-                }, 200); // Match transition duration
+                }, 200);
             }
         }
          // Close modal if clicking outside the content
@@ -346,7 +473,8 @@
             }
         });
 
-        // --- NEW: AI Greeting Logic ---
+        // --- AI Greeting Logic ---
+        function generateGreeting(username) { /* ... (same as before) ... */ }
         function generateGreeting(username) {
             const hour = new Date().getHours();
             let timeOfDayGreeting = "";
@@ -371,17 +499,17 @@
                  "ทานอาหารที่มีประโยชน์ด้วยนะคะ 🍎",
                  "วันนี้อากาศดี ออกไปเดินเล่นไหมคะ? 🚶‍♀️"
             ];
-             if (hour < 18) {
+             if (hour < 12) {
                  suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
              } // Keep afternoon/evening suggestions fixed or randomize them too
 
             return `${timeOfDayGreeting} คุณ${username}! ${suggestion}`;
         }
-        // --- END NEW LOGIC ---
 
 
         // --- Fetch Health Data ---
-        async function fetchHealthData(lineUserId) {
+        async function fetchHealthData(lineUserId) { /* ... (same as before) ... */ }
+         async function fetchHealthData(lineUserId) {
             // Reset UI
             stepsData.innerText = "Loading...";
             hrData.innerText = "... BPM";
@@ -465,8 +593,214 @@
             }
         }
 
+
+        // --- ★★★ NEW: Meditation Timer & Audio Logic ★★★ ---
+
+        // Helper function to format time (MM:SS)
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Update Timer UI
+        function updateTimerUI() {
+            meditationTimeLeft.innerText = formatTime(meditationTimeRemaining);
+            const progress = ((meditationTimeTotal - meditationTimeRemaining) / meditationTimeTotal) * 100;
+            const circumference = 2 * Math.PI * 88; // radius = 88 from SVG
+            meditationProgressCircle.style.strokeDashoffset = circumference * (1 - progress / 100);
+
+            if (meditationTimeRemaining <= 0) {
+                meditationStatus.innerText = "Complete!";
+            } else {
+                meditationStatus.innerText = meditationIsPlaying ? 'Meditating...' : 'Paused';
+            }
+        }
+
+        // Start the meditation timer
+        function startMeditationTimer() {
+            if (meditationIsPlaying || meditationTimeRemaining <= 0) return;
+            meditationIsPlaying = true;
+            meditationStatus.innerText = 'Meditating...';
+            // Disable duration buttons while playing
+            durationButtons.forEach(btn => btn.disabled = true);
+            // Update Play/Pause button UI
+            meditationPlayIcon.classList.add('hidden');
+            meditationPauseIcon.classList.remove('hidden');
+            meditationPlayText.innerText = 'Pause';
+
+            meditationTimerInterval = setInterval(() => {
+                meditationTimeRemaining--;
+                updateTimerUI();
+                if (meditationTimeRemaining <= 0) {
+                    stopMeditationTimer(true); // Pass true to indicate completion
+                }
+            }, 1000);
+        }
+
+        // Stop or Pause the meditation timer
+        function stopMeditationTimer(isComplete = false) {
+            clearInterval(meditationTimerInterval);
+            meditationTimerInterval = null;
+            meditationIsPlaying = false;
+            meditationStatus.innerText = isComplete ? 'Complete!' : 'Paused';
+            // Re-enable duration buttons if not complete
+            if (!isComplete) {
+                durationButtons.forEach(btn => btn.disabled = false);
+            }
+            // Update Play/Pause button UI
+            meditationPlayIcon.classList.remove('hidden');
+            meditationPauseIcon.classList.add('hidden');
+            meditationPlayText.innerText = 'Start';
+
+            if (isComplete) {
+                // Optionally stop audio on completion, or let it continue
+                // stopAudio();
+                alert('Meditation session complete! Great job! 🧘‍♂️');
+            }
+        }
+
+        // Reset the meditation timer
+        function resetMeditationTimer() {
+            stopMeditationTimer();
+            meditationTimeRemaining = meditationTimeTotal;
+            updateTimerUI();
+            meditationStatus.innerText = 'Ready';
+            durationButtons.forEach(btn => btn.disabled = false); // Ensure buttons are enabled
+        }
+
+        // Select a new duration
+        function selectMeditationDuration(duration) {
+            if (meditationIsPlaying) return; // Cannot change duration while playing
+            meditationTimeTotal = duration;
+            meditationTimeRemaining = duration;
+            updateTimerUI();
+            // Update active button style
+            durationButtons.forEach(btn => {
+                if (parseInt(btn.dataset.duration) === duration) {
+                    btn.classList.add('duration-button-active');
+                } else {
+                    btn.classList.remove('duration-button-active');
+                }
+            });
+        }
+
+         // Initialize Tone.js audio components
+        function initializeAudio() {
+            if (!audioSynth) {
+                console.log("[Audio] Initializing Tone.js Synth...");
+                // Create a simple, calming synth sound
+                audioSynth = new Tone.MonoSynth({
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 2, decay: 1, sustain: 0.8, release: 5 },
+                    filterEnvelope: { attack: 2, decay: 0.1, sustain: 0.5, release: 5, baseFrequency: 200, octaves: 3 }
+                }).toDestination();
+                // Set volume (e.g., -12 dB for background music)
+                audioSynth.volume.value = -18;
+                 console.log("[Audio] Synth created.");
+
+                 // Update mute button based on initial state
+                 updateMuteButtonUI();
+            }
+        }
+
+        // Start audio playback
+        function startAudio() {
+            if (!audioSynth) initializeAudio(); // Ensure synth exists
+            if (!audioIsPlaying) {
+                 // IMPORTANT: Start AudioContext on user interaction
+                if (!isAudioContextStarted) {
+                     Tone.start().then(() => {
+                         console.log('[Audio] AudioContext started by user interaction.');
+                         isAudioContextStarted = true;
+                         // Start playing *after* context is started
+                         audioSynth.triggerAttack("C3"); // Play a low C note
+                         audioIsPlaying = true;
+                         updateAudioPlayButtonUI();
+                         console.log("[Audio] Playback started.");
+                     }).catch(e => console.error("[Audio] Tone.start error:", e));
+                } else {
+                     // AudioContext already started, just play
+                     audioSynth.triggerAttack("C3");
+                     audioIsPlaying = true;
+                     updateAudioPlayButtonUI();
+                     console.log("[Audio] Playback started.");
+                }
+            }
+        }
+
+        // Stop audio playback
+        function stopAudio() {
+            if (audioSynth && audioIsPlaying) {
+                audioSynth.triggerRelease(); // Fade out the sound
+                audioIsPlaying = false;
+                updateAudioPlayButtonUI();
+                console.log("[Audio] Playback stopped.");
+            }
+            // Optionally stop the transport if using loops/sequences
+            // Tone.Transport.stop();
+        }
+
+        // Toggle audio play/pause
+        function toggleAudioPlay() {
+             // Ensure AudioContext starts on the first play attempt
+            if (!isAudioContextStarted) {
+                startAudio(); // startAudio handles Tone.start()
+            } else if (audioIsPlaying) {
+                stopAudio();
+            } else {
+                startAudio();
+            }
+        }
+
+
+        // Toggle audio mute/unmute
+        function toggleAudioMute() {
+            if (!audioSynth) return; // No audio to mute
+            audioIsMuted = !audioIsMuted;
+            Tone.Destination.mute = audioIsMuted;
+            updateMuteButtonUI();
+             console.log(`[Audio] Mute toggled: ${audioIsMuted}`);
+        }
+
+        // Update UI for Audio Play/Pause button
+        function updateAudioPlayButtonUI() {
+            if (audioIsPlaying) {
+                audioPlayIcon.classList.add('hidden');
+                audioPauseIcon.classList.remove('hidden');
+                 // Replace placeholder icons if you have actual SVGs
+                // Use SVG content directly if needed
+                audioPlayIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>`; // Play Icon
+                audioPauseIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 100-2H8V8a1 1 0 000-1zM11 8a1 1 0 100-2h1a1 1 0 100 2h-1z" clip-rule="evenodd" /></svg>`; // Pause Icon
+            } else {
+                audioPlayIcon.classList.remove('hidden');
+                audioPauseIcon.classList.add('hidden');
+                 // Replace placeholder icons
+                audioPlayIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" /></svg>`; // Play Icon
+                audioPauseIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 100-2H8V8a1 1 0 000-1zM11 8a1 1 0 100-2h1a1 1 0 100 2h-1z" clip-rule="evenodd" /></svg>`; // Pause Icon
+            }
+        }
+         // Update UI for Audio Mute/Unmute button
+        function updateMuteButtonUI() {
+             if (audioIsMuted) {
+                audioMuteIcon.classList.remove('hidden');
+                audioUnmuteIcon.classList.add('hidden');
+                 // Replace icons
+                 audioMuteIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1.707-8.707a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.293 9.293z" clip-rule="evenodd" /></svg>`; // Mute icon
+                 audioUnmuteIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M7 9a3 3 0 013-3h1a3 3 0 110 6H8a1 1 0 00-1 1v1a1 1 0 102 0v-1h2a5 5 0 000-10H8a3 3 0 00-3 3v2a1 1 0 102 0V9zm11.5-4.5a.5.5 0 01.5.5v10a.5.5 0 01-1 0V5a.5.5 0 01.5-.5zm-3 0a.5.5 0 01.5.5v10a.5.5 0 01-1 0V5a.5.5 0 01.5-.5z"/></svg>`; // Unmute icon
+            } else {
+                audioMuteIcon.classList.add('hidden');
+                audioUnmuteIcon.classList.remove('hidden');
+                 // Replace icons
+                 audioMuteIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1.707-8.707a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.293 9.293z" clip-rule="evenodd" /></svg>`; // Mute icon
+                 audioUnmuteIcon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M7 9a3 3 0 013-3h1a3 3 0 110 6H8a1 1 0 00-1 1v1a1 1 0 102 0v-1h2a5 5 0 000-10H8a3 3 0 00-3 3v2a1 1 0 102 0V9zm11.5-4.5a.5.5 0 01.5.5v10a.5.5 0 01-1 0V5a.5.5 0 01.5-.5zm-3 0a.5.5 0 01.5.5v10a.5.5 0 01-1 0V5a.5.5 0 01.5-.5z"/></svg>`; // Unmute icon
+            }
+        }
+
+
         // --- LIFF Initialization ---
-        async function initializeLiff() {
+        async function initializeLiff() { /* ... (same as before) ... */ }
+         async function initializeLiff() {
             showLoading();
             console.log("[LIFF] Initializing...");
             try {
@@ -489,9 +823,8 @@
                     displayName.innerText = profile.displayName;
                     userId.innerText = profile.userId;
 
-                    // ★★★ NEW: Set Greeting Message ★★★
+                    // Set Greeting Message
                     greetingMessage.innerText = generateGreeting(profile.displayName);
-                    // ★★★ END NEW CODE ★★★
 
                     console.log("[LIFF] Checking URL params...");
                     const processedRedirect = checkUrlParams(); // Check if just returned from OAuth
@@ -510,8 +843,10 @@
             }
         }
 
+
         // --- Check URL Params ---
-        function checkUrlParams() {
+        function checkUrlParams() { /* ... (same as before) ... */ }
+         function checkUrlParams() {
             const params = new URLSearchParams(window.location.search);
             let processedParams = false;
             if (params.has('connect') && params.get('connect') === 'success') {
@@ -538,8 +873,14 @@
             return processedParams;
         }
 
+
         // --- Event Listeners ---
-        btnLogin.addEventListener("click", () => {
+        btnLogin.addEventListener("click", () => { /* ... (same as before) ... */ });
+        btnLogout.addEventListener("click", () => { /* ... (same as before) ... */ });
+        btnConnectHealth.addEventListener("click", async () => { /* ... (same as before) ... */ });
+        // Modal triggers
+        btnMedication.addEventListener("click", () => { /* ... (same as before) ... */ });
+         btnLogin.addEventListener("click", () => {
              console.log("[LIFF] Login button clicked.");
             liff.login({ redirectUri: window.location.href });
         });
@@ -593,10 +934,45 @@
              console.log("[LIFF] Medication button clicked.");
             openModal('medicationModal');
         });
-        btnMeditation.addEventListener("click", () => {
-             console.log("[LIFF] Meditation button clicked.");
-            openModal('meditationModal');
+
+        // ★★★ UPDATED: btnMeditation Listener (Starts AudioContext) ★★★
+        btnMeditation.addEventListener("click", async () => {
+            console.log("[LIFF] Meditation button clicked.");
+            // IMPORTANT: Start AudioContext on user interaction BEFORE opening modal
+            if (!isAudioContextStarted && Tone.context.state !== 'running') {
+                try {
+                    await Tone.start();
+                    console.log('[Audio] AudioContext started by button click.');
+                    isAudioContextStarted = true;
+                } catch (e) {
+                    console.error("[Audio] Failed to start AudioContext:", e);
+                    alert("Could not start audio. Please interact with the page first.");
+                    return; // Don't open modal if audio fails to start
+                }
+            }
+            openModal('meditationModal'); // Now open the modal
         });
+
+        // Meditation Timer Listeners
+        btnMeditationTogglePlay.addEventListener('click', () => {
+            if (meditationIsPlaying) {
+                stopMeditationTimer();
+            } else {
+                startMeditationTimer();
+            }
+        });
+        btnMeditationReset.addEventListener('click', resetMeditationTimer);
+        durationButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const duration = parseInt(button.dataset.duration);
+                selectMeditationDuration(duration);
+            });
+        });
+
+        // ★★★ NEW: Audio Control Listeners ★★★
+        btnAudioTogglePlay.addEventListener('click', toggleAudioPlay);
+        btnAudioToggleMute.addEventListener('click', toggleAudioMute);
+
 
         // --- Run ---
         document.addEventListener("DOMContentLoaded", initializeLiff);
