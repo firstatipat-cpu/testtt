@@ -180,6 +180,16 @@
             <button onclick="closeModal('medicationModal')" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium transition duration-200">Close</button>
         </div>
     </div>
+    <div id="medicationModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none">
+        <div class="modal-content bg-white rounded-lg p-6 max-w-sm w-full shadow-xl transition-transform duration-200">
+            <div class="flex items-center gap-2 mb-4">
+                 <svg class="w-5 h-5 text-pink-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.368-.825a2 2 0 01-1.022-.547L12.572 11h-1.144l-2.443 2.509a2 2 0 01-1.022.547l-2.368.825a2 2 0 00-1.022.547L3 17.25a2 2 0 002 2h14a2 2 0 002-2l-1.572-1.822zM12 2a4 4 0 014 4h-8a4 4 0 014-4z"></path></svg>
+                <h2 class="text-lg font-semibold text-gray-900">Medication Reminder</h2>
+            </div>
+            <p class="text-gray-600 mb-6 text-sm">ตั้งการแจ้งเตือนเพื่อทานยาให้ตรงเวลา (ฟีเจอร์นี้ยังไม่พร้อมใช้งานในเวอร์ชันนี้)</p>
+            <button onclick="closeModal('medicationModal')" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium transition duration-200">Close</button>
+        </div>
+    </div>
     <div id="meditationModal" class="modal fixed inset-0 z-50 items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none">
          <div class="modal-content bg-white rounded-lg p-6 max-w-sm w-full shadow-xl transition-transform duration-200 relative">
              <button onclick="closeModal('meditationModal')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10">
