@@ -251,14 +251,10 @@
         const LIFF_ID = "2008337931-z1xeJb7D"; // 🔸 MUST BE YOUR LIFF ID
         const SERVER_URL = "https://sequential-seborrheal-clelia.ngrok-free.dev"; // 🔗 MUST BE YOUR NGROK URL
 
+        
         // --- State Variables ---
         // (Copied - No changes needed)
-        let meditationTimerInterval = null; let meditationIsPlaying = false; let meditationTimeTotal = 180; let meditationTimeRemaining = 180; let audioPlayers = {}; let currentAudioPlayer = null; 
-        
-        // 👇 ★★★ [แก้ไข] 1. เปลี่ยนค่าเริ่มต้นเป็น 'song1' ★★★
-        let selectedSoundType = 'song1'; 
-        
-        let audioIsPlaying = false; let audioIsMuted = false; let isAudioContextStarted = false;
+        let meditationTimerInterval = null; let meditationIsPlaying = false; let meditationTimeTotal = 180; let meditationTimeRemaining = 180; let audioPlayers = {}; let currentAudioPlayer = null; let selectedSoundType = 'pad'; let audioIsPlaying = false; let audioIsMuted = false; let isAudioContextStarted = false;
 
         // --- UI Functions ---
         // (Copied - No changes needed)
@@ -285,84 +281,9 @@
         function resetMeditationTimer() { stopMeditationTimer(); meditationTimeRemaining = meditationTimeTotal; updateTimerUI(); meditationStatus.innerText = 'Ready'; durationButtons.forEach(btn => btn.disabled = false); soundSelectButtons.forEach(btn => btn.disabled = false); }
         function selectMeditationDuration(duration) { if (meditationIsPlaying) return; meditationTimeTotal = duration; meditationTimeRemaining = duration; updateTimerUI(); durationButtons.forEach(btn => { if (parseInt(btn.dataset.duration) === duration) { btn.classList.add('control-button-active'); btn.classList.remove('control-button-inactive'); } else { btn.classList.remove('control-button-active'); btn.classList.add('control-button-inactive'); } }); console.log(`[Meditation] Duration set to ${duration / 60} minutes`); }
         function selectSound(soundType) { if (meditationIsPlaying) return; selectedSoundType = soundType; soundSelectButtons.forEach(btn => { if (btn.dataset.sound === soundType) { btn.classList.add('control-button-active'); btn.classList.remove('control-button-inactive'); } else { btn.classList.remove('control-button-active'); btn.classList.add('control-button-inactive'); } }); currentAudioPlayer = audioPlayers[selectedSoundType]; console.log(`[Audio] Sound selected: ${soundType}`); }
-        
-        // 👇 ★★★ [แก้ไข] 2. แทนที่ฟังก์ชัน initializeAudio ทั้งหมด ★★★
-        function initializeAudio() {
-            if (Object.keys(audioPlayers).length > 0) return;
-            console.log("[Audio] Initializing Tone.js Players...");
-
-            try {
-                // ❗❗❗ คุณต้องเปลี่ยนลิงก์เหล่านี้เป็นลิงก์ไฟล์ .mp3 จริงๆ ของคุณ ❗❗❗
-                // และต้องแน่ใจว่าเซิร์ฟเวอร์ของคุณอนุญาตให้เข้าถึงไฟล์ (CORS)
-                const songURLs = {
-                    'song1': 'https://storage.googleapis.com/healthliff/song1.mp3', // <-- ⚠️ แก้ไข URL นี้
-                    'song2': 'https://storage.googleapis.com/healthliff/song2.mp3'  // <-- ⚠️ แก้ไข URL นี้
-                };
-
-                const players = new Tone.Players(songURLs, () => {
-                    // Callback นี้จะทำงานเมื่อโหลดไฟล์เสร็จ
-                    console.log("[Audio] All songs loaded.");
-
-                    // 3. ตั้งค่า Player แต่ละตัว
-                    const player1 = players.player('song1');
-                    player1.loop = true; // ให้เล่นวนซ้ำ
-                    player1.volume.value = -12; // ตั้งค่าความดังตามต้องการ
-                    audioPlayers['song1'] = player1; // เก็บ player ไว้
-
-                    const player2 = players.player('song2');
-                    player2.loop = true; // ให้เล่นวนซ้ำ
-                    player2.volume.value = -12; // ตั้งค่าความดังตามต้องการ
-                    audioPlayers['song2'] = player2; // เก็บ player ไว้
-
-                    // 4. เชื่อมต่อ Player ทั้งหมดไปยังลำโพง
-                    players.toDestination();
-                    
-                    // 5. เลือกเพลงที่ถูกเลือกไว้
-                    // (selectedSoundType ถูกตั้งค่าเริ่มต้นไว้เป็น 'song1' แล้ว)
-                    currentAudioPlayer = audioPlayers[selectedSoundType];
-                    
-                    console.log("[Audio] Players created and ready.");
-                    updateMuteButtonUI();
-
-                }).toDestination(); // เชื่อมต่อตัวจัดการหลักไปที่ลำโพง
-
-            } catch (e) {
-                console.error("[Audio] Error creating Tone.js players:", e);
-                btnAudioToggleMute.disabled = true;
-                soundSelectButtons.forEach(btn => btn.disabled = true);
-            }
-        }
-
-        // 👇 ★★★ [แก้ไข] 3. แก้ไขฟังก์ชัน startAudio (ไม่ต้องใช้ Transport) ★★★
-        function startAudio() {
-            if (!currentAudioPlayer) {
-                console.warn("[Audio] No audio player selected or player is not loaded yet.");
-                if (Object.keys(audioPlayers).length === 0) {
-                    initializeAudio(); // ลองโหลดถ้ายังไม่ได้โหลด
-                }
-                return; 
-            }
-
-            if (!audioIsPlaying && isAudioContextStarted) {
-                console.log(`[Audio] Starting playback for: ${selectedSoundType}`);
-                currentAudioPlayer.start(); // <--- เปลี่ยนจาก Transport
-                audioIsPlaying = true;
-            } else if (!isAudioContextStarted) {
-                console.warn("[Audio] Cannot start audio - AudioContext not started by user yet.");
-            } else if (!currentAudioPlayer) {
-                console.error("[Audio] Cannot start audio - No player selected/initialized.");
-            }
-        }
-
-        // 👇 ★★★ [แก้ไข] 4. แก้ไขฟังก์ชัน stopAudio (ไม่ต้องใช้ Transport) ★★★
-        function stopAudio() {
-            if (audioIsPlaying && currentAudioPlayer) {
-                console.log(`[Audio] Stopping playback for: ${selectedSoundType}`);
-                currentAudioPlayer.stop(); // <--- เปลี่ยนจาก Transport
-                audioIsPlaying = false;
-            }
-        }
-        
+        function initializeAudio() { if (Object.keys(audioPlayers).length > 0) return; console.log("[Audio] Initializing Tone.js Synths..."); try { const padSynth = new Tone.AMSynth({ harmonicity: 1.5, oscillator: { type: "sine" }, envelope: { attack: 2, decay: 1, sustain: 0.8, release: 4 }, modulation: { type: "square" }, modulationEnvelope: { attack: 0.5, decay: 0.01, sustain: 1, release: 0.5 } }).toDestination(); padSynth.volume.value = -18; const padSequence = new Tone.Sequence((time, note) => { padSynth.triggerAttackRelease(note, "2n", time); }, ["C3", ["E3", "G3"], "C3", "G2"], "1n"); padSequence.loop = true; audioPlayers['pad'] = padSequence; console.log("[Audio] Pad Synth created."); const pluckSynth = new Tone.PluckSynth({ attackNoise: 0.5, dampening: 4000, resonance: 0.8 }).toDestination(); const reverb = new Tone.Reverb(3).toDestination(); pluckSynth.connect(reverb); pluckSynth.volume.value = -12; const pluckSequence = new Tone.Sequence((time, note) => { pluckSynth.triggerAttack(note, time); }, ["E4", null, "G4", null, "B4", null, "G4", null], "2n"); pluckSequence.loop = true; audioPlayers['pluck'] = pluckSequence; console.log("[Audio] Pluck Synth created."); currentAudioPlayer = audioPlayers[selectedSoundType]; updateMuteButtonUI(); } catch (e) { console.error("[Audio] Error creating Tone.js components:", e); btnAudioToggleMute.disabled = true; soundSelectButtons.forEach(btn => btn.disabled = true); } }
+        function startAudio() { if (!currentAudioPlayer) initializeAudio(); if (!audioIsPlaying && isAudioContextStarted && currentAudioPlayer) { console.log(`[Audio] Starting playback for: ${selectedSoundType}`); Tone.Transport.start(); currentAudioPlayer.start(0); audioIsPlaying = true; } else if (!isAudioContextStarted) { console.warn("[Audio] Cannot start audio - AudioContext not started by user yet."); } else if (!currentAudioPlayer) { console.error("[Audio] Cannot start audio - No player selected/initialized."); } }
+        function stopAudio() { if (audioIsPlaying && currentAudioPlayer) { console.log(`[Audio] Stopping playback for: ${selectedSoundType}`); currentAudioPlayer.stop(); Tone.Transport.stop(); audioIsPlaying = false; } }
         function toggleAudioMute() { if (!isAudioContextStarted) { console.warn("[Audio] Cannot toggle mute - AudioContext not started."); return; } if (Object.keys(audioPlayers).length === 0) initializeAudio(); audioIsMuted = !audioIsMuted; Tone.Destination.mute = audioIsMuted; updateMuteButtonUI(); console.log(`[Audio] Mute toggled: ${audioIsMuted}`); }
         function updateMuteButtonUI() { if (audioIsMuted) { audioMuteIcon.classList.remove('hidden'); audioUnmuteIcon.classList.add('hidden'); } else { audioMuteIcon.classList.add('hidden'); audioUnmuteIcon.classList.remove('hidden'); } }
 
@@ -376,7 +297,7 @@
 
         // --- Event Listeners ---
         // (Copied - No changes needed)
-        btnLogin.addEventListener("click", () => { console.log("[LIFF] Login button clicked."); liff.login({ redirectUri: window.location.href }); }); btnLogout.addEventListener("click", () => { if (liff.isLoggedIn()) { console.log("[LIFF] Logout button clicked."); if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) { console.log("[LIFF] Logging out..."); liff.logout(); window.location.reload(); } else { console.log("[LIFF] Logout cancelled."); } } }); btnConnectHealth.addEventListener("click", async () => { if (btnConnectHealth.disabled) return; console.log("[LIFF] Connect Health button clicked."); btnConnectHealth.disabled = true; connectText.innerText = "Connecting..."; connectPulse.classList.add('hidden'); try { const profile = await liff.getProfile(); const lineUserId = profile.userId; const authUrl = `${SERVER_URL}/auth/google/start?line_user_id=${lineUserId}`; console.log(`[LIFF] Starting auth flow for ${lineUserId} at ${authUrl}`); if (liff.isInClient()) { console.log("[LIFF] Opening external window for auth."); alert("ระบบจะเปิดเบราว์เซอร์ภายนอกเพื่อให้คุณล็อกอิน Google..."); liff.openWindow({ url: authUrl, external: true }); } else { console.log("[LIFF] Redirecting in current window for auth."); window.location.href = authUrl; } } catch (err) { console.error("[LIFF] Error starting auth flow:", err); alert("เกิดข้อผิดพลาดในการเชื่อมต่อ: " + err.message); updateConnectButton(false, "Connection Error"); } }); btnMedication.addEventListener("click", () => { console.log("[LIFF] Medication button clicked."); openModal('medicationModal'); }); btnMeditation.addEventListener("click", async () => { console.log("[LIFF] Meditation button clicked."); if (!isAudioContextStarted && Tone.context.state !== 'running') { try { await Tone.start(); console.log('[Audio] AudioContext started by button click.'); isAudioContextStarted = true; initializeAudio(); } catch (e) { console.error("[Audio] Failed to start AudioContext:", e); alert("Could not start audio."); return; } } selectSound(selectedSoundType); selectMeditationDuration(meditationTimeTotal); openModal('mediditationModal'); }); btnMeditationTogglePlay.addEventListener('click', () => { if (meditationIsPlaying) { stopMeditationTimer(); } else { if (!isAudioContextStarted) { Tone.start().then(() => { console.log('[Audio] AudioContext started by Play button.'); isAudioContextStarted = true; initializeAudio(); startMeditationTimer(); }).catch(e => console.error("[Audio] Failed to start AudioContext on Play:", e)); } else { startMeditationTimer(); } } }); btnMeditationReset.addEventListener('click', resetMeditationTimer); durationButtons.forEach(button => { button.addEventListener('click', () => { const duration = parseInt(button.dataset.duration); selectMeditationDuration(duration); }); }); soundSelectButtons.forEach(button => { button.addEventListener('click', () => { const soundType = button.dataset.sound; selectSound(soundType); }); }); btnAudioToggleMute.addEventListener('click', toggleAudioMute);
+        btnLogin.addEventListener("click", () => { console.log("[LIFF] Login button clicked."); liff.login({ redirectUri: window.location.href }); }); btnLogout.addEventListener("click", () => { if (liff.isLoggedIn()) { console.log("[LIFF] Logout button clicked."); if (confirm("คุณต้องการออกจากระบบใช่หรือไม่?")) { console.log("[LIFF] Logging out..."); liff.logout(); window.location.reload(); } else { console.log("[LIFF] Logout cancelled."); } } }); btnConnectHealth.addEventListener("click", async () => { if (btnConnectHealth.disabled) return; console.log("[LIFF] Connect Health button clicked."); btnConnectHealth.disabled = true; connectText.innerText = "Connecting..."; connectPulse.classList.add('hidden'); try { const profile = await liff.getProfile(); const lineUserId = profile.userId; const authUrl = `${SERVER_URL}/auth/google/start?line_user_id=${lineUserId}`; console.log(`[LIFF] Starting auth flow for ${lineUserId} at ${authUrl}`); if (liff.isInClient()) { console.log("[LIFF] Opening external window for auth."); alert("ระบบจะเปิดเบราว์เซอร์ภายนอกเพื่อให้คุณล็อกอิน Google..."); liff.openWindow({ url: authUrl, external: true }); } else { console.log("[LIFF] Redirecting in current window for auth."); window.location.href = authUrl; } } catch (err) { console.error("[LIFF] Error starting auth flow:", err); alert("เกิดข้อผิดพลาดในการเชื่อมต่อ: " + err.message); updateConnectButton(false, "Connection Error"); } }); btnMedication.addEventListener("click", () => { console.log("[LIFF] Medication button clicked."); openModal('medicationModal'); }); btnMeditation.addEventListener("click", async () => { console.log("[LIFF] Meditation button clicked."); if (!isAudioContextStarted && Tone.context.state !== 'running') { try { await Tone.start(); console.log('[Audio] AudioContext started by button click.'); isAudioContextStarted = true; initializeAudio(); } catch (e) { console.error("[Audio] Failed to start AudioContext:", e); alert("Could not start audio."); return; } } selectSound(selectedSoundType); selectMeditationDuration(meditationTimeTotal); openModal('meditationModal'); }); btnMeditationTogglePlay.addEventListener('click', () => { if (meditationIsPlaying) { stopMeditationTimer(); } else { if (!isAudioContextStarted) { Tone.start().then(() => { console.log('[Audio] AudioContext started by Play button.'); isAudioContextStarted = true; initializeAudio(); startMeditationTimer(); }).catch(e => console.error("[Audio] Failed to start AudioContext on Play:", e)); } else { startMeditationTimer(); } } }); btnMeditationReset.addEventListener('click', resetMeditationTimer); durationButtons.forEach(button => { button.addEventListener('click', () => { const duration = parseInt(button.dataset.duration); selectMeditationDuration(duration); }); }); soundSelectButtons.forEach(button => { button.addEventListener('click', () => { const soundType = button.dataset.sound; selectSound(soundType); }); }); btnAudioToggleMute.addEventListener('click', toggleAudioMute);
 
         // --- Run ---
         document.addEventListener("DOMContentLoaded", initializeLiff);
@@ -384,6 +305,7 @@
     </script>
     </body>
 </html>
+
 
 
 
